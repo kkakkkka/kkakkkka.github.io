@@ -1,64 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search> 
-  
-  
-    
-    <entry>
-      <title>ViT</title>
-      <link href="/2022/04/16/vit/"/>
-      <url>/2022/04/16/vit/</url>
-      
-        <content type="html"><![CDATA[<h2 id="已有研究"><a href="#已有研究" class="headerlink" title="已有研究"></a>已有研究</h2><p>Transformer在NLP上的成功</p><p>Attention机制在CV领域的应用，能够完全替代卷积且在理论上验证有效。</p><p>缺陷：</p><ul><li>由于使用了专门的注意力机制，但未在现代硬件加速器上有效拓展，计算效率低</li><li>在大规模数据集上，Resnet-like的架构依然是SOTA</li></ul><p>作者的工作：尽可能少的修改标准的Transformer，将其应用于图像领域。</p><h2 id="自注意力机制的应用"><a href="#自注意力机制的应用" class="headerlink" title="自注意力机制的应用"></a>自注意力机制的应用</h2><p>核心思想：以每个像素作为序列中的元素会导致很高的计算复杂度，因此通过一些方法缩短序列的长度。</p><ul><li>Parmar et al. (2018）：仅在每个查询像素的局部邻域中应用自注意力机制，而非全局应用。stand alone attention</li><li>Hu et al., 2019; Ramachandran et al., 2019; Zhao et al., 2020：使用上述方法，完全替代了卷积。</li><li>Sparse Transformers (Child et al., 2019) ：应用了全局注意力的可拓展近似（scalable approximation）</li><li>Weissenborn et al., 2019：将自注意力机制用于大小不同的块中，以扩展（scale）注意力。</li><li>Hoet al., 2019; Wang et al., 2020a：尝试了一种极端情况，只沿单个轴。轴注意力axial attention，先在横轴上做注意力，再在纵轴上做注意力。</li></ul><p>上述方法的缺陷：需要复杂的工程才能高效应用于硬件加速器。</p><p>相似研究：</p><ul><li>Cordonnier et al. (2020)：将输入图像分割成多个大小为2x2的块，在顶部（top）应用完整的自注意力机制。<ul><li>缺陷：仅适用于小分辨率图像，且效果不如SOTA的CNN。</li></ul></li></ul><h3 id="其他研究（TODO）"><a href="#其他研究（TODO）" class="headerlink" title="其他研究（TODO）"></a>其他研究（TODO）</h3><p>结合self-attention的CNN</p><p>image GPT（iGPT）</p><p>使用额外数据集以取得SOTA结果</p><p>当数据集大小变化时，CNN的性能变化</p><p>CNN在大规模数据集上进行迁移学习的研究</p><h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="ViT.assets/1646548420444.png" alt="1646548420444"></p><p>首先将图像分为多个固定大小的patches，通过线性映射层（linear embedding）获得输入。由于图片块本身是有相对位置的，而transformer中不考虑位置信息，因此加入position embedding，然后将生成的向量序列送到标准的Transformer编码器中。为了实现分类，向序列中添加额外的可学习的”classification token”（模仿BERT），CLS token。</p><h2 id="输入的转换"><a href="#输入的转换" class="headerlink" title="输入的转换"></a>输入的转换</h2><p>将图像拆分成块，通过线性Embedding对这些patch进行转换，作为Transformer的输入。</p><p>Image patch相当于NLP中的tokens（words），即题目所表达的，一张图片相当于很多个16x16的单词。</p><p>效果：在Imagenet-1k这样的较小的数据集上比Resnet要低几个百分点，但是在大数据集上达到了SOTA。</p><p>原因：Transformer缺少CNN固有的inductive biaes，如平移等变性（translation equivariance）和局部性，因此在数据量不足的时候并不能很好的泛化。</p><p>改进方法：在大规模数据集（14M-300M images）上进行训练。</p><p>ViT存在的缺陷：需要大数据集上进行训练才能够取得优秀的效果。</p><p>输入维度的转换：</p><p>$(H,W,C)\rightarrow(N,P^2*C)$，其中（H，W）是图像的分辨率，C是channels的数目。（P，P）是image patch的分辨率，$N=HW/P^2$是patch的数量，作为Transformer的有效输入长度。</p><p>Transformer在所有层中使用恒定的潜在向量大小D，作者将patch展平，并通过可训练的线性投射层将其映射到D维。</p><h2 id="Position-Embedding"><a href="#Position-Embedding" class="headerlink" title="Position Embedding"></a>Position Embedding</h2><p>并非直接传具体的数字1,2,3,….而是有一个表，表的每一行代表了序号，每一行是一个向量，维度是768（$16<em>16</em>3$），这个表通过学习得到。然后将这个向量信息加到前面生成的向量里面（197x768：其中196是patch的个数，注：224x224的图片，16x16的patch size。然后还有个cls token（197x1）），这里的加并非concatenation，是直接sum。</p><p>使用标准的1D可学习的Position embedding，没有用2D的是因为没有显著提升。</p><p>从附录中的figure 10也可以看到，Position Embedding是能够通过学习得到相对位置信息的，且能够学习到2D的邻域相似性。这也验证了上面的结论。</p><p><img src="ViT.assets/1646569234586.png" alt="1646569234586" style="zoom:67%;"></p><h2 id="归纳偏置"><a href="#归纳偏置" class="headerlink" title="归纳偏置"></a>归纳偏置</h2><p>归纳偏置：一种先验知识（提前做好的假设）</p><ul><li>locality：卷积神经网络以滑动窗口的形式，一点一点在图片上进行卷积，因此假设在图片上相邻的区域会有相邻的特征。</li><li>平移等变形translation equivariance：$f(g(x))=g(f(x))$，无论先做f函数还是g函数，结果是不变的。其中f可以理解为卷积操作，g可以理解为平移操作。</li></ul><p>相较于CNN，ViT的image-specific归纳偏差要少得多。</p><p>在CNN中，整个模型的每一层有局部性，平移等效性，二维邻域结构。</p><p>在ViT中，只有MLP具有平移等效性和局部性，自注意力是全局的。</p><p>二维邻域结构的时候非常谨慎：在模型开始时，通过将图像切割成块并在fine-tuning time来调整针对不同分辨率图像的Position Embedding。除此之外，初始化时的position embedding不携带有关patch的2D位置信息，必须从头学习patch之间的所有空间关系。</p><h2 id="混合模型"><a href="#混合模型" class="headerlink" title="混合模型"></a>混合模型</h2><p>输入序列由CNN的特征图组成，而非原始的图像块。</p><p>然后通过patch embedding projection对从CNN特征图中提取得到的序列进行处理。</p><p>在特殊情况下，patch的空间大小可以为1x1，这意味着输入序列是通过简单地将特征图的空间维度展平并投影到Transformer的维度上获得的。</p><h2 id="微调以及更高的分辨率"><a href="#微调以及更高的分辨率" class="headerlink" title="微调以及更高的分辨率"></a>微调以及更高的分辨率</h2><p>将预训练的ViT模型的预测头移除，加入一个零初始化的DxK的前馈层，其中K是下游任务中类别的数量。</p><p>对于更高的分辨率，保持patch size不变，这样会产生更大的有效序列长度。</p><p>ViT可以在内存限制范围内处理任意长度的序列，但预训练的position embedding可能就不再适用了。</p><p>因此作者根据它们在原始图像中的位置，对预训练的position embedding进行2D插值。这种分辨率上的调整和patch extraction是将有关图像2D结构的归纳偏置注入到ViT的唯一的点。</p><h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>预训练</p><ul><li>ILSVRC-2012（1.3M images、1k classes）文中称之为Imagenet。</li><li>ImageNet-21k （14M images、21k classes）</li><li>JFT（303M 高分辨率images、18k classes）</li></ul><p>下游任务</p><ul><li>ImageNet on the original validation labels and the cleaned-up<br>ReaL labels </li><li>CIFAR-10/100 </li><li>Oxford-IIIT Pets</li><li>Oxford Flowers-102</li><li>19-task VTAB classification suite</li></ul><p>预处理方法见（ Kolesnikov et al. (2020））</p><h3 id="模型变体"><a href="#模型变体" class="headerlink" title="模型变体"></a>模型变体</h3><p><img src="ViT.assets/1646554416365.png" alt="1646554416365" style="zoom:67%;"></p><p>ViT-L/16 means the“Large” variant with 16 × 16 input patch size.</p><p>Transformer的序列长度与块大小的平方成反比，因此块大小较小的模型计算成本更高。</p><h3 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h3><p>Resnet，但是batch normalization换成了group normalization，并采用了标准化的卷积。</p><p>对于混合体，将中间特征图输入到ViT中，patch大小为一个像素。</p><h3 id="训练参数-TODO"><a href="#训练参数-TODO" class="headerlink" title="训练参数(TODO)"></a>训练参数(TODO)</h3><h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><p>通过linear few-shot或者fine-tuning accuracy来进行评价。</p><p>fine-tuning accuracy在模型微调后进行评估。</p><p>linear few-shot是通过解决正则化最小二乘回归问题得到的，该问题将训练图像子集的（冻结）表示映射到${-1,1}^k$目标向量。即不去finetune，直接拿来做特征提取器，做一个regression。</p><p>在评价中主要用fine-tuning accuracy，在微调成本过高时使用few-shot进行快速动态评估。</p><h3 id="与SOTA模型的比较"><a href="#与SOTA模型的比较" class="headerlink" title="与SOTA模型的比较"></a>与SOTA模型的比较</h3><p>在性能指标有微小的提升，但是预训练使用的资源大大减少。</p><p>对于数据集大小较为敏感，需要大量数据集进行训练。在Imagenet上不如Resnet，但是在更大的数据集上超国了Resnet。</p><p>在迁移学习的准确率上，ViT的效果要好过Resnet。在预训练计算量较小时，hybrid能够改进纯transformer。但随着模型的增大，这种差异消失了。这一现象是惊人的，因为人们在直觉上会觉得，卷积局部特征处理能够帮助任何大小的ViT。此外，ViT在作者尝试过的预训练计算量范围内并没有达到性能饱和，因此可以做进一步的拓展，有进一步提升的空间。</p><p>作者的结论：卷积归纳偏差对较小的数据集很有用，但对于较大的数据集，直接从数据中学习相关模式就足够了，甚至是beneficial的。</p><h3 id="自监督训练"><a href="#自监督训练" class="headerlink" title="自监督训练"></a>自监督训练</h3><p>采用自监督方法（masked patch prediction，模仿BERT），使用ViT-B/16在Imagenet上实现了79.9%的准确率，比从头开始训练高了2%，但是依然比有监督训练低了4%。</p><h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>与先前的使用自注意力机制的CV工作不同（采用image-specific的归纳偏置、ViT仅在对初始patch进行提取的时候使用了），ViT将图像表达为一系列的patch，并使用NLP中的Transformer对序列进行处理。这在大规模的数据集上取得了SOTA的效果，同时能够保持一个相对低的预训练代价。</p><p><strong>Further Work</strong></p><ul><li>将ViT应用于检测和分割任务</li><li>进行基于自监督学习的预训练方法的探索</li></ul><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>优点</p><ul><li>使用相对少的计算资源</li><li>在大数据集上取得了SOTA</li><li>可以通过预训练进一步提升性能，在已观测范围内未达到性能饱和</li></ul><p>缺点</p><ul><li>在中小数据集上效果不佳（可以考虑采用混合模型，加入CNN的归纳偏置以提升效果）</li><li>在图片分辨率变化较大的时候，仅仅通过简单的2D插值难以保持Position Embedding的有效性</li></ul><p>进一步的工作</p><ul><li>论文仅在分类任务上做了验证，还可以尝试用于检测和分割任务</li><li>改进自监督学习的方法</li></ul>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 深度学习 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>test</title>
-      <link href="/2022/04/16/test/"/>
-      <url>/2022/04/16/test/</url>
-      
-        <content type="html"><![CDATA[<p>小测一下代码显示效果！</p><h2 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h2><h3 id="区间修改，区间查询"><a href="#区间修改，区间查询" class="headerlink" title="区间修改，区间查询"></a>区间修改，区间查询</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;bits/stdc++.h&gt;#define ll(x) (x &lt;&lt; 1)#define rr(x) (x &lt;&lt; 1 | 1)using namespace std;const int N = 400000 + 5;typedef long long lol;lol n, m;lol w[N];struct seg_tree {    lol sum, l, r, lazy;} t[N];lol gi() {    lol ans = 0, f = 1;    char i = getchar();    while (i &lt; '0' || i &gt; '9') {        if (i == '-') f = -1;        i = getchar();    }    while (i &gt;= '0' &amp;&amp; i &lt;= '9') {        ans = ans * 10 + i - '0';        i = getchar();    }    return ans * f;}void up(lol root) {    t[root].sum = t[ll(root)].sum + t[rr(root)].sum;}void build(lol root, lol l, lol r) {    int mid = l + r &gt;&gt; 1;    t[root].l = l, t[root].r = r;    if (l == r) {        t[root].sum = w[l];        return;    }    build(ll(root), l, mid);    build(rr(root), mid + 1, r);    up(root);}void pushdown(lol root) {    lol mid = t[root].l + t[root].r &gt;&gt; 1;    t[ll(root)].lazy += t[root].lazy;    t[rr(root)].lazy += t[root].lazy;    t[ll(root)].sum += t[root].lazy * (mid - t[root].l + 1);    t[rr(root)].sum += t[root].lazy * (t[root].r - mid);    t[root].lazy = 0;}void updata(lol root, lol l, lol r, lol val) {    lol mid = t[root].l + t[root].r &gt;&gt; 1;    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) {        t[root].sum += val * (t[root].r - t[root].l + 1);        t[root].lazy += val;        return;    }    if (t[root].lazy) pushdown(root);    if (l &lt;= mid) updata(ll(root), l, r, val);    if (mid &lt; r) updata(rr(root), l, r, val);    up(root);}lol query(lol root, lol l, lol r) {    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) return t[root].sum;    if (r &lt; t[root].l || t[root].r &lt; l) return 0;    if (t[root].lazy) pushdown(root);    return query(ll(root), l, r) + query(rr(root), l, r);}int main() {    lol f, x, y, val;    n = gi();    m = gi();    for (lol i = 1; i &lt;= n; i++)        w[i] = gi();    build(1, 1, n);    for (lol i = 1; i &lt;= m; i++) {        f = gi();        x = gi();        y = gi();        if (f == 1)            val = gi(), updata(1, x, y, val);        else            printf("%lld\n", query(1, x, y));    }    return 0;}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 杂谈 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>Hello World</title>
-      <link href="/2022/04/16/hello-world/"/>
-      <url>/2022/04/16/hello-world/</url>
-      
-        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> 杂谈 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-  
-  
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2022/04/16/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>test</title>
+    <url>/2022/04/16/test/</url>
+    <content><![CDATA[<p>小测一下代码显示效果！</p>
+<h2 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h2><h3 id="区间修改，区间查询"><a href="#区间修改，区间查询" class="headerlink" title="区间修改，区间查询"></a>区间修改，区间查询</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+#define ll(x) (x &lt;&lt; 1)
+#define rr(x) (x &lt;&lt; 1 | 1)
+using namespace std;
+const int N = 400000 + 5;
+typedef long long lol;
+
+lol n, m;
+lol w[N];
+
+struct seg_tree {
+    lol sum, l, r, lazy;
+} t[N];
+
+lol gi() {
+    lol ans = 0, f = 1;
+    char i = getchar();
+    while (i &lt; '0' || i &gt; '9') {
+        if (i == '-') f = -1;
+        i = getchar();
+    }
+    while (i &gt;= '0' &amp;&amp; i &lt;= '9') {
+        ans = ans * 10 + i - '0';
+        i = getchar();
+    }
+    return ans * f;
+}
+
+void up(lol root) {
+    t[root].sum = t[ll(root)].sum + t[rr(root)].sum;
+}
+
+void build(lol root, lol l, lol r) {
+    int mid = l + r &gt;&gt; 1;
+    t[root].l = l, t[root].r = r;
+    if (l == r) {
+        t[root].sum = w[l];
+        return;
+    }
+    build(ll(root), l, mid);
+    build(rr(root), mid + 1, r);
+    up(root);
+}
+
+void pushdown(lol root) {
+    lol mid = t[root].l + t[root].r &gt;&gt; 1;
+    t[ll(root)].lazy += t[root].lazy;
+    t[rr(root)].lazy += t[root].lazy;
+    t[ll(root)].sum += t[root].lazy * (mid - t[root].l + 1);
+    t[rr(root)].sum += t[root].lazy * (t[root].r - mid);
+    t[root].lazy = 0;
+}
+
+
+
+void updata(lol root, lol l, lol r, lol val) {
+    lol mid = t[root].l + t[root].r &gt;&gt; 1;
+    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) {
+        t[root].sum += val * (t[root].r - t[root].l + 1);
+        t[root].lazy += val;
+        return;
+    }
+    if (t[root].lazy) pushdown(root);
+    if (l &lt;= mid) updata(ll(root), l, r, val);
+    if (mid &lt; r) updata(rr(root), l, r, val);
+    up(root);
+}
+
+lol query(lol root, lol l, lol r) {
+    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) return t[root].sum;
+    if (r &lt; t[root].l || t[root].r &lt; l) return 0;
+    if (t[root].lazy) pushdown(root);
+    return query(ll(root), l, r) + query(rr(root), l, r);
+}
+
+int main() {
+    lol f, x, y, val;
+    n = gi();
+    m = gi();
+    for (lol i = 1; i &lt;= n; i++)
+        w[i] = gi();
+    build(1, 1, n);
+    for (lol i = 1; i &lt;= m; i++) {
+        f = gi();
+        x = gi();
+        y = gi();
+        if (f == 1)
+            val = gi(), updata(1, x, y, val);
+        else
+            printf("%lld\n", query(1, x, y));
+    }
+    return 0;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ViT</title>
+    <url>/2022/04/16/vit/</url>
+    <content><![CDATA[<h2 id="已有研究"><a href="#已有研究" class="headerlink" title="已有研究"></a>已有研究</h2><p>Transformer在NLP上的成功</p>
+<p>Attention机制在CV领域的应用，能够完全替代卷积且在理论上验证有效。</p>
+<p>缺陷：</p>
+<ul>
+<li>由于使用了专门的注意力机制，但未在现代硬件加速器上有效拓展，计算效率低</li>
+<li>在大规模数据集上，Resnet-like的架构依然是SOTA</li>
+</ul>
+<p>作者的工作：尽可能少的修改标准的Transformer，将其应用于图像领域。</p>
+<h2 id="自注意力机制的应用"><a href="#自注意力机制的应用" class="headerlink" title="自注意力机制的应用"></a>自注意力机制的应用</h2><p>核心思想：以每个像素作为序列中的元素会导致很高的计算复杂度，因此通过一些方法缩短序列的长度。</p>
+<ul>
+<li>Parmar et al. (2018）：仅在每个查询像素的局部邻域中应用自注意力机制，而非全局应用。stand alone attention</li>
+<li>Hu et al., 2019; Ramachandran et al., 2019; Zhao et al., 2020：使用上述方法，完全替代了卷积。</li>
+<li>Sparse Transformers (Child et al., 2019) ：应用了全局注意力的可拓展近似（scalable approximation）</li>
+<li>Weissenborn et al., 2019：将自注意力机制用于大小不同的块中，以扩展（scale）注意力。</li>
+<li>Hoet al., 2019; Wang et al., 2020a：尝试了一种极端情况，只沿单个轴。轴注意力axial attention，先在横轴上做注意力，再在纵轴上做注意力。</li>
+</ul>
+<p>上述方法的缺陷：需要复杂的工程才能高效应用于硬件加速器。</p>
+<p>相似研究：</p>
+<ul>
+<li>Cordonnier et al. (2020)：将输入图像分割成多个大小为2x2的块，在顶部（top）应用完整的自注意力机制。<ul>
+<li>缺陷：仅适用于小分辨率图像，且效果不如SOTA的CNN。</li>
+</ul>
+</li>
+</ul>
+<h3 id="其他研究（TODO）"><a href="#其他研究（TODO）" class="headerlink" title="其他研究（TODO）"></a>其他研究（TODO）</h3><p>结合self-attention的CNN</p>
+<p>image GPT（iGPT）</p>
+<p>使用额外数据集以取得SOTA结果</p>
+<p>当数据集大小变化时，CNN的性能变化</p>
+<p>CNN在大规模数据集上进行迁移学习的研究</p>
+<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/2022/04/16/vit.assets/1646548420444.png" alt="1646548420444"></p>
+<p>首先将图像分为多个固定大小的patches，通过线性映射层（linear embedding）获得输入。由于图片块本身是有相对位置的，而transformer中不考虑位置信息，因此加入position embedding，然后将生成的向量序列送到标准的Transformer编码器中。为了实现分类，向序列中添加额外的可学习的”classification token”（模仿BERT），CLS token。</p>
+<h2 id="输入的转换"><a href="#输入的转换" class="headerlink" title="输入的转换"></a>输入的转换</h2><p>将图像拆分成块，通过线性Embedding对这些patch进行转换，作为Transformer的输入。</p>
+<p>Image patch相当于NLP中的tokens（words），即题目所表达的，一张图片相当于很多个16x16的单词。</p>
+<p>效果：在Imagenet-1k这样的较小的数据集上比Resnet要低几个百分点，但是在大数据集上达到了SOTA。</p>
+<p>原因：Transformer缺少CNN固有的inductive biaes，如平移等变性（translation equivariance）和局部性，因此在数据量不足的时候并不能很好的泛化。</p>
+<p>改进方法：在大规模数据集（14M-300M images）上进行训练。</p>
+<p>ViT存在的缺陷：需要大数据集上进行训练才能够取得优秀的效果。</p>
+<p>输入维度的转换：</p>
+<p>$(H,W,C)\rightarrow(N,P^2*C)$，其中（H，W）是图像的分辨率，C是channels的数目。（P，P）是image patch的分辨率，$N=HW/P^2$是patch的数量，作为Transformer的有效输入长度。</p>
+<p>Transformer在所有层中使用恒定的潜在向量大小D，作者将patch展平，并通过可训练的线性投射层将其映射到D维。</p>
+<h2 id="Position-Embedding"><a href="#Position-Embedding" class="headerlink" title="Position Embedding"></a>Position Embedding</h2><p>并非直接传具体的数字1,2,3,….而是有一个表，表的每一行代表了序号，每一行是一个向量，维度是768（$16<em>16</em>3$），这个表通过学习得到。然后将这个向量信息加到前面生成的向量里面（197x768：其中196是patch的个数，注：224x224的图片，16x16的patch size。然后还有个cls token（197x1）），这里的加并非concatenation，是直接sum。</p>
+<p>使用标准的1D可学习的Position embedding，没有用2D的是因为没有显著提升。</p>
+<p>从附录中的figure 10也可以看到，Position Embedding是能够通过学习得到相对位置信息的，且能够学习到2D的邻域相似性。这也验证了上面的结论。</p>
+<p><img src="/2022/04/16/vit.assets/1646569234586.png" alt="1646569234586" style="zoom:67%;"></p>
+<h2 id="归纳偏置"><a href="#归纳偏置" class="headerlink" title="归纳偏置"></a>归纳偏置</h2><p>归纳偏置：一种先验知识（提前做好的假设）</p>
+<ul>
+<li>locality：卷积神经网络以滑动窗口的形式，一点一点在图片上进行卷积，因此假设在图片上相邻的区域会有相邻的特征。</li>
+<li>平移等变形translation equivariance：$f(g(x))=g(f(x))$，无论先做f函数还是g函数，结果是不变的。其中f可以理解为卷积操作，g可以理解为平移操作。</li>
+</ul>
+<p>相较于CNN，ViT的image-specific归纳偏差要少得多。</p>
+<p>在CNN中，整个模型的每一层有局部性，平移等效性，二维邻域结构。</p>
+<p>在ViT中，只有MLP具有平移等效性和局部性，自注意力是全局的。</p>
+<p>二维邻域结构的时候非常谨慎：在模型开始时，通过将图像切割成块并在fine-tuning time来调整针对不同分辨率图像的Position Embedding。除此之外，初始化时的position embedding不携带有关patch的2D位置信息，必须从头学习patch之间的所有空间关系。</p>
+<h2 id="混合模型"><a href="#混合模型" class="headerlink" title="混合模型"></a>混合模型</h2><p>输入序列由CNN的特征图组成，而非原始的图像块。</p>
+<p>然后通过patch embedding projection对从CNN特征图中提取得到的序列进行处理。</p>
+<p>在特殊情况下，patch的空间大小可以为1x1，这意味着输入序列是通过简单地将特征图的空间维度展平并投影到Transformer的维度上获得的。</p>
+<h2 id="微调以及更高的分辨率"><a href="#微调以及更高的分辨率" class="headerlink" title="微调以及更高的分辨率"></a>微调以及更高的分辨率</h2><p>将预训练的ViT模型的预测头移除，加入一个零初始化的DxK的前馈层，其中K是下游任务中类别的数量。</p>
+<p>对于更高的分辨率，保持patch size不变，这样会产生更大的有效序列长度。</p>
+<p>ViT可以在内存限制范围内处理任意长度的序列，但预训练的position embedding可能就不再适用了。</p>
+<p>因此作者根据它们在原始图像中的位置，对预训练的position embedding进行2D插值。这种分辨率上的调整和patch extraction是将有关图像2D结构的归纳偏置注入到ViT的唯一的点。</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>预训练</p>
+<ul>
+<li>ILSVRC-2012（1.3M images、1k classes）文中称之为Imagenet。</li>
+<li>ImageNet-21k （14M images、21k classes）</li>
+<li>JFT（303M 高分辨率images、18k classes）</li>
+</ul>
+<p>下游任务</p>
+<ul>
+<li>ImageNet on the original validation labels and the cleaned-up<br>ReaL labels </li>
+<li>CIFAR-10/100 </li>
+<li>Oxford-IIIT Pets</li>
+<li>Oxford Flowers-102</li>
+<li>19-task VTAB classification suite</li>
+</ul>
+<p>预处理方法见（ Kolesnikov et al. (2020））</p>
+<h3 id="模型变体"><a href="#模型变体" class="headerlink" title="模型变体"></a>模型变体</h3><p><img src="/2022/04/16/vit.assets/1646554416365.png" alt="1646554416365" style="zoom:67%;"></p>
+<p>ViT-L/16 means the“Large” variant with 16 × 16 input patch size.</p>
+<p>Transformer的序列长度与块大小的平方成反比，因此块大小较小的模型计算成本更高。</p>
+<h3 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h3><p>Resnet，但是batch normalization换成了group normalization，并采用了标准化的卷积。</p>
+<p>对于混合体，将中间特征图输入到ViT中，patch大小为一个像素。</p>
+<h3 id="训练参数-TODO"><a href="#训练参数-TODO" class="headerlink" title="训练参数(TODO)"></a>训练参数(TODO)</h3><h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><p>通过linear few-shot或者fine-tuning accuracy来进行评价。</p>
+<p>fine-tuning accuracy在模型微调后进行评估。</p>
+<p>linear few-shot是通过解决正则化最小二乘回归问题得到的，该问题将训练图像子集的（冻结）表示映射到${-1,1}^k$目标向量。即不去finetune，直接拿来做特征提取器，做一个regression。</p>
+<p>在评价中主要用fine-tuning accuracy，在微调成本过高时使用few-shot进行快速动态评估。</p>
+<h3 id="与SOTA模型的比较"><a href="#与SOTA模型的比较" class="headerlink" title="与SOTA模型的比较"></a>与SOTA模型的比较</h3><p>在性能指标有微小的提升，但是预训练使用的资源大大减少。</p>
+<p>对于数据集大小较为敏感，需要大量数据集进行训练。在Imagenet上不如Resnet，但是在更大的数据集上超国了Resnet。</p>
+<p>在迁移学习的准确率上，ViT的效果要好过Resnet。在预训练计算量较小时，hybrid能够改进纯transformer。但随着模型的增大，这种差异消失了。这一现象是惊人的，因为人们在直觉上会觉得，卷积局部特征处理能够帮助任何大小的ViT。此外，ViT在作者尝试过的预训练计算量范围内并没有达到性能饱和，因此可以做进一步的拓展，有进一步提升的空间。</p>
+<p>作者的结论：卷积归纳偏差对较小的数据集很有用，但对于较大的数据集，直接从数据中学习相关模式就足够了，甚至是beneficial的。</p>
+<h3 id="自监督训练"><a href="#自监督训练" class="headerlink" title="自监督训练"></a>自监督训练</h3><p>采用自监督方法（masked patch prediction，模仿BERT），使用ViT-B/16在Imagenet上实现了79.9%的准确率，比从头开始训练高了2%，但是依然比有监督训练低了4%。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>与先前的使用自注意力机制的CV工作不同（采用image-specific的归纳偏置、ViT仅在对初始patch进行提取的时候使用了），ViT将图像表达为一系列的patch，并使用NLP中的Transformer对序列进行处理。这在大规模的数据集上取得了SOTA的效果，同时能够保持一个相对低的预训练代价。</p>
+<p><strong>Further Work</strong></p>
+<ul>
+<li>将ViT应用于检测和分割任务</li>
+<li>进行基于自监督学习的预训练方法的探索</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>优点</p>
+<ul>
+<li>使用相对少的计算资源</li>
+<li>在大数据集上取得了SOTA</li>
+<li>可以通过预训练进一步提升性能，在已观测范围内未达到性能饱和</li>
+</ul>
+<p>缺点</p>
+<ul>
+<li>在中小数据集上效果不佳（可以考虑采用混合模型，加入CNN的归纳偏置以提升效果）</li>
+<li>在图片分辨率变化较大的时候，仅仅通过简单的2D插值难以保持Position Embedding的有效性</li>
+</ul>
+<p>进一步的工作</p>
+<ul>
+<li>论文仅在分类任务上做了验证，还可以尝试用于检测和分割任务</li>
+<li>改进自监督学习的方法</li>
+</ul>
+]]></content>
+      <tags>
+        <tag>深度学习</tag>
+      </tags>
+  </entry>
 </search>

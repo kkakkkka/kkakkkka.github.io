@@ -527,7 +527,7 @@ Attention机制在CV领域的应用，能够完全替代卷积且在理论上验
 <p>使用额外数据集以取得SOTA结果</p>
 <p>当数据集大小变化时，CNN的性能变化</p>
 <p>CNN在大规模数据集上进行迁移学习的研究</p>
-<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="ViT.assets/1646548420444.png" alt="1646548420444"></p>
+<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/2022/04/16/vit.assets/1646548420444.png" alt="1646548420444"></p>
 <p>首先将图像分为多个固定大小的patches，通过线性映射层（linear embedding）获得输入。由于图片块本身是有相对位置的，而transformer中不考虑位置信息，因此加入position embedding，然后将生成的向量序列送到标准的Transformer编码器中。为了实现分类，向序列中添加额外的可学习的”classification token”（模仿BERT），CLS token。</p>
 <h2 id="输入的转换"><a href="#输入的转换" class="headerlink" title="输入的转换"></a>输入的转换</h2><p>将图像拆分成块，通过线性Embedding对这些patch进行转换，作为Transformer的输入。</p>
 <p>Image patch相当于NLP中的tokens（words），即题目所表达的，一张图片相当于很多个16x16的单词。</p>
@@ -541,7 +541,7 @@ Attention机制在CV领域的应用，能够完全替代卷积且在理论上验
 <h2 id="Position-Embedding"><a href="#Position-Embedding" class="headerlink" title="Position Embedding"></a>Position Embedding</h2><p>并非直接传具体的数字1,2,3,….而是有一个表，表的每一行代表了序号，每一行是一个向量，维度是768（$16<em>16</em>3$），这个表通过学习得到。然后将这个向量信息加到前面生成的向量里面（197x768：其中196是patch的个数，注：224x224的图片，16x16的patch size。然后还有个cls token（197x1）），这里的加并非concatenation，是直接sum。</p>
 <p>使用标准的1D可学习的Position embedding，没有用2D的是因为没有显著提升。</p>
 <p>从附录中的figure 10也可以看到，Position Embedding是能够通过学习得到相对位置信息的，且能够学习到2D的邻域相似性。这也验证了上面的结论。</p>
-<p><img src="ViT.assets/1646569234586.png" alt="1646569234586" style="zoom:67%;"></p>
+<p><img src="/2022/04/16/vit.assets/1646569234586.png" alt="1646569234586" style="zoom:67%;"></p>
 <h2 id="归纳偏置"><a href="#归纳偏置" class="headerlink" title="归纳偏置"></a>归纳偏置</h2><p>归纳偏置：一种先验知识（提前做好的假设）</p>
 <ul>
 <li>locality：卷积神经网络以滑动窗口的形式，一点一点在图片上进行卷积，因此假设在图片上相邻的区域会有相邻的特征。</li>
@@ -573,7 +573,7 @@ Attention机制在CV领域的应用，能够完全替代卷积且在理论上验
 <li>19-task VTAB classification suite</li>
 </ul>
 <p>预处理方法见（ Kolesnikov et al. (2020））</p>
-<h3 id="模型变体"><a href="#模型变体" class="headerlink" title="模型变体"></a>模型变体</h3><p><img src="ViT.assets/1646554416365.png" alt="1646554416365" style="zoom:67%;"></p>
+<h3 id="模型变体"><a href="#模型变体" class="headerlink" title="模型变体"></a>模型变体</h3><p><img src="/2022/04/16/vit.assets/1646554416365.png" alt="1646554416365" style="zoom:67%;"></p>
 <p>ViT-L/16 means the“Large” variant with 16 × 16 input patch size.</p>
 <p>Transformer的序列长度与块大小的平方成反比，因此块大小较小的模型计算成本更高。</p>
 <h3 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h3><p>Resnet，但是batch normalization换成了group normalization，并采用了标准化的卷积。</p>
@@ -848,18 +848,17 @@ Attention机制在CV领域的应用，能够完全替代卷积且在理论上验
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2022/04/16/vit/">
+                <a href="/2022/04/16/test/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="ViT">
+                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="test">
                         
-                        <span class="card-title">ViT</span>
+                        <span class="card-title">test</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -869,9 +868,9 @@ Attention机制在CV领域的应用，能够完全替代卷积且在理论上验
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-16
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2022-04-16
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -880,12 +879,11 @@ Attention机制在CV领域的应用，能够完全替代卷积且在理论上验
                         </span>
                     </div>
                 </div>
-
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
-                        <span class="chip bg-color">深度学习</span>
+                    <a href="/tags/%E6%9D%82%E8%B0%88/">
+                        <span class="chip bg-color">杂谈</span>
                     </a>
                     
                 </div>
@@ -899,13 +897,13 @@ Attention机制在CV领域的应用，能够完全替代卷积且在理论上验
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2022/04/16/test/">
+                <a href="/2022/04/16/hello-world/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/10.jpg" class="responsive-img" alt="test">
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
                         
-                        <span class="card-title">test</span>
+                        <span class="card-title">Hello World</span>
                     </div>
                 </a>
                 <div class="card-content article-content">

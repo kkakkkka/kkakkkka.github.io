@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-04-16T12:08:52.778Z</updated>
+  <updated>2022-04-16T12:08:18.312Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -15,29 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>ViT</title>
-    <link href="https://kkakkkka.github.io/2022/04/16/vit/"/>
-    <id>https://kkakkkka.github.io/2022/04/16/vit/</id>
-    <published>2022-04-16T10:18:22.000Z</published>
-    <updated>2022-04-16T12:08:52.778Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;已有研究&quot;&gt;&lt;a href=&quot;#已有研究&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    
-    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
   
   <entry>
     <title>test</title>
@@ -53,6 +30,29 @@
     
     
     <category term="杂谈" scheme="https://kkakkkka.github.io/tags/%E6%9D%82%E8%B0%88/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ViT</title>
+    <link href="https://kkakkkka.github.io/2022/04/16/vit/"/>
+    <id>https://kkakkkka.github.io/2022/04/16/vit/</id>
+    <published>2022-04-16T10:18:22.000Z</published>
+    <updated>2022-04-16T12:31:24.897Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;已有研究&quot;&gt;&lt;a href=&quot;#已有研究&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
