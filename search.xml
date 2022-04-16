@@ -124,6 +124,9 @@
     <url>/2022/04/16/test/</url>
     <content><![CDATA[<p>小测一下，开博客原来这么简单！</p>
 ]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
@@ -138,5 +141,8 @@
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 <p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
 ]]></content>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
   </entry>
 </search>
