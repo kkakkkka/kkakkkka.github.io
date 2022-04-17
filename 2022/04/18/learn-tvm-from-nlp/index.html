@@ -509,7 +509,7 @@
 <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>现有工作缺乏动态输出机制，削弱了灵活性，限制了零样本迁移能力</p>
 <p>对比语言图像预训练</p>
 <p>CLIP与GPT相似，优于最好的Imagenet模型，且计算效率更高</p>
-<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p><img src="1647189274363.png" alt="1647189274363"></p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p><img src="/2022/04/18/learn-tvm-from-nlp/1647189274363.png" alt="1647189274363"></p>
 <p>方法的核心是从自然语言的监督中学习感知。</p>
 <p>从自然语言中学习的优势</p>
 <ul>
@@ -518,12 +518,12 @@
 </ul>
 <h3 id="Pre-Training-Method"><a href="#Pre-Training-Method" class="headerlink" title="Pre-Training Method"></a>Pre-Training Method</h3><p>训练效率是最重要的，本文根据这一指标选择预训练方法</p>
 <p>仅预测整个文本与哪个图像配对，而不是该文本的确切单词</p>
-<p><img src="1647224538268.png" alt="1647224538268"></p>
+<p><img src="/2022/04/18/learn-tvm-from-nlp/1647224538268.png" alt="1647224538268"></p>
 <p>橙线和蓝线表示的方法试图预测每张图像所附文本的确切单词。这是一项艰巨的任务，因为与图像同时出现的描述、评论和相关文本种类繁多。可以看到本文提出的方法在效率上有很大的提升。</p>
 <p>对于给定的N个（图像，文本）对，CLIP用于预测NxN个对中哪个是实际发生的。</p>
 <p>CLIP学习得到一个多模态嵌入空间，通过图片编码器和文本编码器来最大化batch中的N个真实对的余弦相似度，同时最小化另外$N^2-N$个非正确对的余弦相似度。</p>
 <p>在相似度分数上，本文使用对称交叉熵损失进行优化</p>
-<p><img src="1647225316655.png" alt="1647225316655"></p>
+<p><img src="/2022/04/18/learn-tvm-from-nlp/1647225316655.png" alt="1647225316655"></p>
 <p>从头开始训练，没有使用ImageNet的权重或是文本编码器的预训练权重进行初始化。</p>
 <p>不使用表示和对比嵌入空间之间的非线性投影，只使用线性投影将每个编码器的表示映射到多模态嵌入空间。作者没有发现两个版本之间训练效率的差异，并推测非线性投影可能仅在自监督表示学习方法中与当前图像的细节共同适应。</p>
 <p>删除了Zhang et al.(2020)提出的文本转换函数 $t_u$（从文本中统一采样单个句子），因为 CLIP 预训练数据集中的许多（图像，文本）对中文本只是一个句子。</p>
