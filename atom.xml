@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-04-17T16:59:35.272Z</updated>
+  <updated>2022-04-17T17:03:33.298Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Learning Transferable Visual Models From Natural Language Supervision</title>
+    <link href="https://kkakkkka.github.io/2022/04/18/learn-tvm-from-nlp/"/>
+    <id>https://kkakkkka.github.io/2022/04/18/learn-tvm-from-nlp/</id>
+    <published>2022-04-17T17:02:29.000Z</published>
+    <updated>2022-04-17T17:03:33.298Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;SOTA训练系统以预测一组固定的预定对象类别，这限制了CV系统的通用性，对于任何其他视觉概念，需要额外的标记数据来进行指定。&lt;/p&gt;
+&lt;p&gt;从有关图像的原始文本中进行学习能够利用更加广泛的监督来源。本文证明了预测哪个标题与哪个图像搭配的简单预训练任务是一种有效且可扩展的方式</summary>
+        
+      
+    
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>Revisiting VG</title>
@@ -28,7 +54,11 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;h2 id=&quot;Introduction-3&quot;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;VG：在图像中定位结构化描述的元素。&lt;/p&gt;
+&lt;p&gt;结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。&lt;/p&gt;
+&lt;h3 id=&quot;场景图&quot;&gt;场景图&lt;/h3&gt;
+&lt;p&gt;&lt;img</summary>
         
       
     
@@ -42,18 +72,19 @@
   </entry>
   
   <entry>
-    <title>rec</title>
+    <title>Reference Expression Comprehension</title>
     <link href="https://kkakkkka.github.io/2022/04/18/rec/"/>
     <id>https://kkakkkka.github.io/2022/04/18/rec/</id>
     <published>2022-04-17T16:21:40.000Z</published>
-    <updated>2022-04-17T16:28:03.042Z</updated>
+    <updated>2022-04-17T17:01:32.541Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h2&gt;&lt;p&gt;引用表达式理解 (Referring expression</summary>
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;Abstract&lt;/h2&gt;
+&lt;p&gt;引用表达式理解 (Referring expression</summary>
         
       
     
@@ -67,18 +98,18 @@
   </entry>
   
   <entry>
-    <title>vit</title>
+    <title>Vision Transformer</title>
     <link href="https://kkakkkka.github.io/2022/04/16/vit/"/>
     <id>https://kkakkkka.github.io/2022/04/16/vit/</id>
     <published>2022-04-16T12:45:40.000Z</published>
-    <updated>2022-04-17T16:28:22.670Z</updated>
+    <updated>2022-04-17T17:01:06.119Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2 id=&quot;已有研究&quot;&gt;&lt;a href=&quot;#已有研究&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;h2</summary>
         
       
     

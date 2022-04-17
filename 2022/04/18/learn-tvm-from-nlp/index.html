@@ -4,8 +4,9 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="home, Python, C++, 爬虫, 深度学习, 并行与分布式">
-    <meta name="description" content="Python, C++, 爬虫, 深度学习, 并行与分布式">
+    <meta name="keywords" content="Learning Transferable Visual Models From Natural Language Supervision, Python, C++, 爬虫, 深度学习, 并行与分布式">
+    <meta name="description" content="SOTA训练系统以预测一组固定的预定对象类别，这限制了CV系统的通用性，对于任何其他视觉概念，需要额外的标记数据来进行指定。
+从有关图像的原始文本中进行学习能够利用更加广泛的监督来源。本文证明了预测哪个标题与哪个图像搭配的简单预训练任务是一">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -19,7 +20,7 @@
 
     
 
-    <title>home | kkakkkka</title>
+    <title>Learning Transferable Visual Models From Natural Language Supervision | kkakkkka</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.min.css">
@@ -312,12 +313,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/1.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">home</h1>
+                    <h1 class="description center-align post-title">Learning Transferable Visual Models From Natural Language Supervision</h1>
                 </div>
             </div>
         </div>
@@ -431,12 +432,25 @@
             <div class="row tag-cate">
                 <div class="col s7">
                     
-                          <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
-                          </div>
+                    <div class="article-tag">
+                        
+                            <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+                                <span class="chip bg-color">深度学习</span>
+                            </a>
+                        
+                    </div>
                     
                 </div>
                 <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fas fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                深度学习
+                            </a>
+                        
+                    </div>
                     
                 </div>
             </div>
@@ -445,28 +459,28 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2022-04-16
+                    2022-04-18
                 </div>
                 
 
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-check fa-fw"></i>更新日期:&nbsp;&nbsp;
-                    2022-04-16
+                    2022-04-18
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    21
+                    2.3k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    1 分
+                    8 分
                 </div>
                 
 
@@ -489,8 +503,125 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>欢迎来到我的博客！<br>
-我先去网上冲浪了，晚点再补充！</p>
+                <p>SOTA训练系统以预测一组固定的预定对象类别，这限制了CV系统的通用性，对于任何其他视觉概念，需要额外的标记数据来进行指定。</p>
+<p>从有关图像的原始文本中进行学习能够利用更加广泛的监督来源。本文证明了预测哪个标题与哪个图像搭配的简单预训练任务是一种有效且可扩展的方式，可以在从互联网收集的 4 亿（图像，文本）对的数据集上从头开始学习 SOTA  图像表示。</p>
+<p>在预训练之后，使用自然语言来文本表示学习的视觉概念（或描述新的概念），使模型能够零样本转移（zero-shot transfer）到下游任务。在大多数任务上，与完全监督学习的baseline相比具有竞争力，且无需任何特定的数据集。</p>
+<h2 id="Introduction-2">Introduction</h2>
+<p>现有工作缺乏动态输出机制，削弱了灵活性，限制了零样本迁移能力</p>
+<p>对比语言图像预训练</p>
+<p>CLIP与GPT相似，优于最好的Imagenet模型，且计算效率更高</p>
+<h2 id="Approach">Approach</h2>
+<p><img src="1647189274363.png" alt="1647189274363"></p>
+<p>方法的核心是从自然语言的监督中学习感知。</p>
+<p>从自然语言中学习的优势</p>
+<ul>
+<li>因为不需要采用经典的机器学习兼容格式（从N个选出1个），相较于用于图像分类的标准crowd-sourced labelling更加容易拓展</li>
+<li>不仅是学习一种表示，还能将表示与语言联系起来，实现灵活的零样本迁移</li>
+</ul>
+<h3 id="Pre-Training-Method">Pre-Training Method</h3>
+<p>训练效率是最重要的，本文根据这一指标选择预训练方法</p>
+<p>仅预测整个文本与哪个图像配对，而不是该文本的确切单词</p>
+<p><img src="1647224538268.png" alt="1647224538268"></p>
+<p>橙线和蓝线表示的方法试图预测每张图像所附文本的确切单词。这是一项艰巨的任务，因为与图像同时出现的描述、评论和相关文本种类繁多。可以看到本文提出的方法在效率上有很大的提升。</p>
+<p>对于给定的N个（图像，文本）对，CLIP用于预测NxN个对中哪个是实际发生的。</p>
+<p>CLIP学习得到一个多模态嵌入空间，通过图片编码器和文本编码器来最大化batch中的N个真实对的余弦相似度，同时最小化另外$N^2-N$个非正确对的余弦相似度。</p>
+<p>在相似度分数上，本文使用对称交叉熵损失进行优化</p>
+<p><img src="1647225316655.png" alt="1647225316655"></p>
+<p>从头开始训练，没有使用ImageNet的权重或是文本编码器的预训练权重进行初始化。</p>
+<p>不使用表示和对比嵌入空间之间的非线性投影，只使用线性投影将每个编码器的表示映射到多模态嵌入空间。作者没有发现两个版本之间训练效率的差异，并推测非线性投影可能仅在自监督表示学习方法中与当前图像的细节共同适应。</p>
+<p>删除了Zhang et al.(2020)提出的文本转换函数 $t_u$（从文本中统一采样单个句子），因为 CLIP 预训练数据集中的许多（图像，文本）对中文本只是一个句子。</p>
+<p>简化了图像变化函数$t_v$，从resized的图片中随机裁剪正方形是训练阶段唯一使用的数据增强。</p>
+<p>用于控制softmax中logits的范围的温度参数$\tau$，在训练阶段直接优化为log-parameterized乘法标量，以避免将其作为超参数。</p>
+<h3 id="Choosing-and-Scaling-a-Model">Choosing and Scaling a Model</h3>
+<p>图像编码器</p>
+<ul>
+<li>ResNet-50
+<ul>
+<li>使用ResNet-D和抗锯齿 rect-2 模糊池进行了优化</li>
+<li>用注意力池机制替换了全局平均池层，实现形式为单层的多头QKV注意力，查询以图像的全局平均池表示为条件</li>
+</ul>
+</li>
+<li>ViT
+<ul>
+<li>在Transformer前面的combined patch和 position embeddings添加了一个额外的层归一化</li>
+<li>使用了略有不同的初始化方案</li>
+</ul>
+</li>
+</ul>
+<p>文本编码器</p>
+<ul>
+<li>Transformer，修改细节见Radford et al. (2019)
+<ul>
+<li>8 个注意力头，参数量63M，12 层，512-wide</li>
+<li>Transformer对文本的小写字节对编码 (BPE) 表示进行操作，词汇大小为 49,152 。</li>
+<li>为了计算效率，最大序列长度为76</li>
+<li>文本序列用 [SOS] 和 [EOS] 标记括起来，并且在 [EOS] 标记处转换器的最高层的激活被视为文本的特征表示，经过层归一化，然后线性投影到多-模态嵌入空间</li>
+<li>Masked self-attention 在文本编码器中使用，以保留使用预训练语言模型进行初始化或添加语言建模作为辅助目标的能力（这一步需要在未来工作进一步探索）</li>
+</ul>
+</li>
+</ul>
+<p>模型的缩放</p>
+<ul>
+<li>图像编码器
+<ul>
+<li>平均分配额外的计算以增加模型的宽度、深度和分辨率</li>
+</ul>
+</li>
+<li>文本编码器
+<ul>
+<li>只缩放模型的宽度，使其与计算的 ResNet 宽度增加成正比</li>
+<li>不缩放深度，CLIP 的性能对文本编码器的容量不太敏感</li>
+</ul>
+</li>
+</ul>
+<h3 id="Training">Training</h3>
+<p>图像编码器（训练了32个epochs）</p>
+<ul>
+<li>ResNet-50</li>
+<li>ResNet-101</li>
+<li>RN50x4、RN50x16 和 RN50x64这三个EfficientNet-style model，分别使用 ResNet-50 的大约 4 倍、16 倍和 64 倍的计算。</li>
+<li>ViT-B/32</li>
+<li>ViT-B/16</li>
+<li>ViT-L/14</li>
+</ul>
+<p>优化器：Adam，在所有非增益或偏差的权重使用解耦权重衰减正则化，使用余弦调度调整学习率</p>
+<p>在训练 1 个 epoch 时，使用网格搜索、随机搜索和手动调整基线 ResNet50 模型的组合来设置初始超参数。</p>
+<p>可学习参数$\tau$初始化为0.07，并进行裁剪以防止将 logits 缩放超过 100</p>
+<p>一个非常大的minibatch size 32768，使用混合精度来加速训练、节省内存。</p>
+<p>为了节省额外的内存，梯度检测点使用了半精度 Adam 统计（Dhariwal 等人，2020）和半精度随机舍入文本编码器权重。</p>
+<h2 id="Experiment">Experiment</h2>
+<p>在CV领域，零样本学习是指在图像分类中泛化到看不见的对象类别的研究</p>
+<p>本文将零样本学习视为对看不见的数据集的泛化（这个看不见的数据集里面有没有未知的类别？）</p>
+<p>现有无监督学习领域的研究主要关注机器学习系统的表示学习能力，本文鼓励将零样本迁移作为衡量机器学习任务学习能力的一种方式。</p>
+<p>从这样的角度看，数据集评估了特定分布上任务的性能。但当前学界创建许多流行的CV数据集，主要是作为基准来指导通用图像分类方法的开发，而不是衡量特定任务的性能。</p>
+<p>在这些类型的数据集上，零样本迁移更多的是对 CLIP 对分布转移和域泛化的鲁棒性的评估，而不是任务泛化。</p>
+<p>Visual N-grams：</p>
+<ul>
+<li>首先将每个数据集的类名转换为其n-gram表示</li>
+<li>根据模型计算其概率，将对应的类别预测为最高的得分</li>
+</ul>
+<p>本文</p>
+<ul>
+<li>对每个数据集，使用数据集中所有类的名称作为潜在文本对的集合</li>
+<li>根据CLIP预测最可能的（图像，文本）对</li>
+</ul>
+<p>具体做法</p>
+<ul>
+<li>根据不同的编码器计算图像的特征嵌入和文本集的特征嵌入</li>
+<li>计算嵌入的余弦相似度，通过温度参数$\tau$进行缩放，通过softmax归一化为概率分布</li>
+<li>预测层是一个多项式逻辑回归分类器（具有L2归一化输入、L2归一化权重、无偏差和温度缩放）</li>
+</ul>
+<p>图像编码器是计算图像特征表示的计算机视觉主干，而文本编码器是一个超网络 (Ha et al.,  2016)，它根据指定文本的文本生成线性分类器的权重类所代表的视觉概念。</p>
+<p>CLIP 的零样本分类器是通过自然语言生成的，它允许直接指定的视觉概念。相比之下，常规的监督学习必须从训练样本中间接推断出概念。</p>
+<h2 id="Conclusion-2">Conclusion</h2>
+<p>NLP预训练模型的成功在CV领域同样适用。CLIP模型在预训练阶段执行各种各样的预训练任务，以优化训练目标。然后可以通过自然语言提示利用此任务学习，以实现对许多现有数据集的零样本迁移。在规模足够大时，这种方法的性能与特定任务的监督学习相比具有竞争力，且仍有很大的改进空间。</p>
+<p>存在的问题</p>
+<ul>
+<li>CLIP的任务学习和迁移能力仍待提升</li>
+<li>需要提高计算效率，计算开销过大，性能未饱和</li>
+<li>在细粒度分类上的性能较差</li>
+<li>对解决深度学习模型泛化脆弱的潜在问题几乎没有作用，需要在庞大而多样的数据集上进行训练，使所有数据都能有效地分布</li>
+</ul>
 
                 
             </div>
@@ -517,7 +648,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="https://kkakkkka.github.io/home/index.html">https://kkakkkka.github.io/home/index.html</a>
+                    <a href="https://kkakkkka.github.io/2022/04/18/learn-tvm-from-nlp/">https://kkakkkka.github.io/2022/04/18/learn-tvm-from-nlp/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -554,7 +685,11 @@
                 <div class="post-meta__tag-list" style="display: inline-block;">
                     
                         <div class="article-tag">
-                            <span class="chip bg-color">无标签</span>
+                            
+                                <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+                                    <span class="chip bg-color">深度学习</span>
+                                </a>
+                            
                         </div>
                     
                 </div>
@@ -731,13 +866,13 @@
                 <i class="far fa-dot-circle"></i>&nbsp;本篇
             </div>
             <div class="card">
-                <a href="/home/index.html">
+                <a href="/2022/04/18/learn-tvm-from-nlp/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="home">
+                        <img src="/medias/featureimages/1.jpg" class="responsive-img" alt="Learning Transferable Visual Models From Natural Language Supervision">
                         
-                        <span class="card-title">home</span>
+                        <span class="card-title">Learning Transferable Visual Models From Natural Language Supervision</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -748,17 +883,29 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-18
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            kkakkkka
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    深度学习
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
 
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+                        <span class="chip bg-color">深度学习</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
@@ -766,16 +913,16 @@
         
         <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge right-badge text-color">
-                本篇&nbsp;<i class="far fa-dot-circle"></i>
+                下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/home/index.html">
+                <a href="/2022/04/18/revisit-vg/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="home">
+                        <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Revisiting VG">
                         
-                        <span class="card-title">home</span>
+                        <span class="card-title">Revisiting VG</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -786,17 +933,28 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-16
+                                <i class="far fa-clock fa-fw icon-date"></i>2022-04-18
                             </span>
                         <span class="publish-author">
                             
-                            <i class="fas fa-user fa-fw"></i>
-                            kkakkkka
+                            <i class="fas fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="post-category">
+                                    深度学习
+                                </a>
+                            
                             
                         </span>
                     </div>
                 </div>
-
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">
+                        <span class="chip bg-color">深度学习</span>
+                    </a>
+                    
+                </div>
                 
             </div>
         </div>
