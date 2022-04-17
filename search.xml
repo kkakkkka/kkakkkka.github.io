@@ -143,6 +143,86 @@
       </tags>
   </entry>
   <entry>
+    <title>Revisiting VG</title>
+    <url>/2022/04/18/revisit-vg/</url>
+    <content><![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>VG：在图像中定位结构化描述的元素。</p>
+<p>结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。</p>
+<h3 id="场景图"><a href="#场景图" class="headerlink" title="场景图"></a>场景图</h3><p><img src="/2022/04/18/revisit-vg/1646963318842.png" alt="1646963318842"></p>
+<p>给定一个场景图和一个输入图像，任务是创建与指定对象对应的边界框，使定位的对象具有指定的属性和关系。</p>
+<p>energy score：反映场景图和定位框之间的匹配质量（lower is better），可用于在检索任务中对图像进行排名。</p>
+<h3 id="主谓宾三元组"><a href="#主谓宾三元组" class="headerlink" title="主谓宾三元组"></a>主谓宾三元组</h3><p><img src="/2022/04/18/revisit-vg/1646963932294.png" alt="1646963932294"></p>
+<p>给定一个三元组和一个输入图像，任务是创建与命名的主题和对象相对应的边界框，以使得定位的框适合指定的谓词。</p>
+<h2 id="Image-Retrieval-Using-Scene-Graphs"><a href="#Image-Retrieval-Using-Scene-Graphs" class="headerlink" title="Image Retrieval Using Scene Graphs"></a>Image Retrieval Using Scene Graphs</h2><p>这一方法不执行任何语言分析，假定自然语言描述已经转换为场景图。</p>
+<p>训练方式：有监督训练，边框用对象类别和属性来标记，边框对用关系来标记。</p>
+<h3 id="原实验成果"><a href="#原实验成果" class="headerlink" title="原实验成果"></a>原实验成果</h3><ul>
+<li><p>采用Recall@k作为评价指标</p>
+</li>
+<li><p>优于一些baseline</p>
+</li>
+<li><p>相较于两种消融形式更好</p>
+<ol>
+<li>只使用对象概率（忽略属性和关系概率）</li>
+<li>同时使用对象和属性概率，忽略关系概率</li>
+</ol>
+</li>
+</ul>
+<h3 id="Revisit-IRSG"><a href="#Revisit-IRSG" class="headerlink" title="Revisit IRSG"></a>Revisit IRSG</h3><p>关注问题：</p>
+<ol>
+<li>除了使用对象信息之外，使用关系信息是否有助于系统的性能提升</li>
+<li>这一研究中使用的数据集中是否存在可利用偏差，类似于Cirik et al. (2018b)在Google-Ref 数据集上的发现<ul>
+<li>此处偏差的定义是：数据集本身允许学习算法依赖于浅层相关性，而不是实际解决预期的任务</li>
+</ul>
+</li>
+<li>如果数据集存在这种偏差，那么IRSG在不含这种偏差的其他数据集上表现如何</li>
+</ol>
+<p>使用一个baseline image-retrieval method，只使用对象概率信息。</p>
+<p>对于给定的测试图像和一个场景图查询，在测试图像中运行IRSG的Geodesic Object Proposal method以获得边界框。然后在每个边界框上跑IRSG训练好的的CNN以获得每个对象类别的概率。</p>
+<p>对于查询中命名的每个对象类别，baseline只为该查询选择具有最高概率的边界框，不使用属性或关系信息。</p>
+<p>然后使用Recall@K来比较二者的性能。</p>
+<p>Recall@k的计算方式：</p>
+<ul>
+<li>对于给定的场景图查询，记Sp为测试集中的positive image（真实对象、属性和关系符合查询），Sn为测试集中的negative image，运行IRSG，返回每个图像相对于场景图的Energy score。</li>
+<li>此外，还计算第二个分数：最高对象类别概率的几何平均值（这一分数忽略了属性和关系信息）。</li>
+<li>由于Sp因不同的查询而异，分别考虑Sp中的每一个正样本Ip，将Ip单独放到有所有负样本的池中，询问Ip是否在top k之中，记R@k为Sp在top k中的比例。</li>
+</ul>
+<p>经过实验，发现IRSG的表现并没有因为系统的关系模型而受益（似乎也没有从属性模型中受益）。</p>
+<p>可能的原因：</p>
+<ul>
+<li>IRSG中的对象关系模型(高斯混合模型)没有捕获有用的信息</li>
+<li>在数据集中存在偏差</li>
+</ul>
+<p>结论：</p>
+<ul>
+<li>由GMM计算的关系概率没有捕获有用的信息。</li>
+<li>数据集中超过一半的positive test images存在偏差（例如，当给出诸如“穿着衬衫的站着的人”的查询时，不需要区分哪个是穿着“衬衫”的特定“站着的人”:每种只有一个。）</li>
+</ul>
+<p>在clean queries and data上结果相似。</p>
+<h3 id="Revisit-“Referring-Relationship”-Grounding"><a href="#Revisit-“Referring-Relationship”-Grounding" class="headerlink" title="Revisit “Referring Relationship” Grounding"></a>Revisit “Referring Relationship” Grounding</h3><p>Krishna et al. (2018)使用迭代attention根据给定谓词在图像区域之间移动，以便定位主体和客体。</p>
+<p>评价指标：主题（subject）和对象（object）检测与真实边界框的平均交集(IOU)</p>
+<p>这一指标无法对检测率进行反馈。</p>
+<p>对比实验：</p>
+<ul>
+<li><p>数据集：VRD</p>
+</li>
+<li><p>使用fast-RCNN进行目标检测，对每个测试图像运行fast-RCNN（微调预训练版本），并为每个查询选择主体和客体类别的最高可信度边界框。(如果查询主题和对象是相同的类别，我们将主题和对象随机分配到最高和第二高的置信度框中。)</p>
+</li>
+<li><p>对于每个查询，我们手动检查每个测试图像中预测的主题和对象框的可视化，以确定主题和对象框是否适合查询的主题、对象和谓词。对于56%的图像/查询对，fast-RCNN已经识别出正确的主题和对象框。这说明不使用任何关系信息，就能在56%的时间里识别出正确的主题和对象框。</p>
+</li>
+<li><p>这表明数据集中存在明显的偏差，这就对该数据集中任何与baseline不相比较的已发表的参考关系结果提出了质疑。</p>
+</li>
+</ul>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>IRSG这一被大量引用的方法表现（Recall@k）未能超过baseline（object-only）（从图表上看几乎一致，IRSG略高一点），且似乎并没有使用object之间的信息，数据集（IRSG作者提供的）中存在可利用偏差。在干净的数据集上，IRSG模型和geometric mean model性能（Recall@k）基本一致（从图表上看IRSG略低一些）</p>
+<p>Krishna et al. (2018).的工作使用的VRD数据集也存在着可利用偏差（前面没有研究指出），但目前只考察了这一篇，另外几篇使用了VRD的还没revisit。</p>
+<p>今后的工作需要关注模型的学习内容和方式，数据集是否包含可利用偏见（exploitable bias）</p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>线段树模板及常见应用</title>
     <url>/2022/04/16/test/</url>
     <content><![CDATA[<h2 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h2><h3 id="区间修改，区间查询"><a href="#区间修改，区间查询" class="headerlink" title="区间修改，区间查询"></a>区间修改，区间查询</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;bits/stdc++.h&gt;
@@ -243,86 +323,6 @@ int main() {
       </categories>
       <tags>
         <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Revisiting VG</title>
-    <url>/2022/04/18/revisit-vg/</url>
-    <content><![CDATA[<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>VG：在图像中定位结构化描述的元素。</p>
-<p>结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。</p>
-<h3 id="场景图"><a href="#场景图" class="headerlink" title="场景图"></a>场景图</h3><p><img src="/2022/04/18/revisit-vg/1646963318842.png" alt="1646963318842"></p>
-<p>给定一个场景图和一个输入图像，任务是创建与指定对象对应的边界框，使定位的对象具有指定的属性和关系。</p>
-<p>energy score：反映场景图和定位框之间的匹配质量（lower is better），可用于在检索任务中对图像进行排名。</p>
-<h3 id="主谓宾三元组"><a href="#主谓宾三元组" class="headerlink" title="主谓宾三元组"></a>主谓宾三元组</h3><p><img src="/2022/04/18/revisit-vg/1646963932294.png" alt="1646963932294"></p>
-<p>给定一个三元组和一个输入图像，任务是创建与命名的主题和对象相对应的边界框，以使得定位的框适合指定的谓词。</p>
-<h2 id="Image-Retrieval-Using-Scene-Graphs"><a href="#Image-Retrieval-Using-Scene-Graphs" class="headerlink" title="Image Retrieval Using Scene Graphs"></a>Image Retrieval Using Scene Graphs</h2><p>这一方法不执行任何语言分析，假定自然语言描述已经转换为场景图。</p>
-<p>训练方式：有监督训练，边框用对象类别和属性来标记，边框对用关系来标记。</p>
-<h3 id="原实验成果"><a href="#原实验成果" class="headerlink" title="原实验成果"></a>原实验成果</h3><ul>
-<li><p>采用Recall@k作为评价指标</p>
-</li>
-<li><p>优于一些baseline</p>
-</li>
-<li><p>相较于两种消融形式更好</p>
-<ol>
-<li>只使用对象概率（忽略属性和关系概率）</li>
-<li>同时使用对象和属性概率，忽略关系概率</li>
-</ol>
-</li>
-</ul>
-<h3 id="Revisit-IRSG"><a href="#Revisit-IRSG" class="headerlink" title="Revisit IRSG"></a>Revisit IRSG</h3><p>关注问题：</p>
-<ol>
-<li>除了使用对象信息之外，使用关系信息是否有助于系统的性能提升</li>
-<li>这一研究中使用的数据集中是否存在可利用偏差，类似于Cirik et al. (2018b)在Google-Ref 数据集上的发现<ul>
-<li>此处偏差的定义是：数据集本身允许学习算法依赖于浅层相关性，而不是实际解决预期的任务</li>
-</ul>
-</li>
-<li>如果数据集存在这种偏差，那么IRSG在不含这种偏差的其他数据集上表现如何</li>
-</ol>
-<p>使用一个baseline image-retrieval method，只使用对象概率信息。</p>
-<p>对于给定的测试图像和一个场景图查询，在测试图像中运行IRSG的Geodesic Object Proposal method以获得边界框。然后在每个边界框上跑IRSG训练好的的CNN以获得每个对象类别的概率。</p>
-<p>对于查询中命名的每个对象类别，baseline只为该查询选择具有最高概率的边界框，不使用属性或关系信息。</p>
-<p>然后使用Recall@K来比较二者的性能。</p>
-<p>Recall@k的计算方式：</p>
-<ul>
-<li>对于给定的场景图查询，记Sp为测试集中的positive image（真实对象、属性和关系符合查询），Sn为测试集中的negative image，运行IRSG，返回每个图像相对于场景图的Energy score。</li>
-<li>此外，还计算第二个分数：最高对象类别概率的几何平均值（这一分数忽略了属性和关系信息）。</li>
-<li>由于Sp因不同的查询而异，分别考虑Sp中的每一个正样本Ip，将Ip单独放到有所有负样本的池中，询问Ip是否在top k之中，记R@k为Sp在top k中的比例。</li>
-</ul>
-<p>经过实验，发现IRSG的表现并没有因为系统的关系模型而受益（似乎也没有从属性模型中受益）。</p>
-<p>可能的原因：</p>
-<ul>
-<li>IRSG中的对象关系模型(高斯混合模型)没有捕获有用的信息</li>
-<li>在数据集中存在偏差</li>
-</ul>
-<p>结论：</p>
-<ul>
-<li>由GMM计算的关系概率没有捕获有用的信息。</li>
-<li>数据集中超过一半的positive test images存在偏差（例如，当给出诸如“穿着衬衫的站着的人”的查询时，不需要区分哪个是穿着“衬衫”的特定“站着的人”:每种只有一个。）</li>
-</ul>
-<p>在clean queries and data上结果相似。</p>
-<h3 id="Revisit-“Referring-Relationship”-Grounding"><a href="#Revisit-“Referring-Relationship”-Grounding" class="headerlink" title="Revisit “Referring Relationship” Grounding"></a>Revisit “Referring Relationship” Grounding</h3><p>Krishna et al. (2018)使用迭代attention根据给定谓词在图像区域之间移动，以便定位主体和客体。</p>
-<p>评价指标：主题（subject）和对象（object）检测与真实边界框的平均交集(IOU)</p>
-<p>这一指标无法对检测率进行反馈。</p>
-<p>对比实验：</p>
-<ul>
-<li><p>数据集：VRD</p>
-</li>
-<li><p>使用fast-RCNN进行目标检测，对每个测试图像运行fast-RCNN（微调预训练版本），并为每个查询选择主体和客体类别的最高可信度边界框。(如果查询主题和对象是相同的类别，我们将主题和对象随机分配到最高和第二高的置信度框中。)</p>
-</li>
-<li><p>对于每个查询，我们手动检查每个测试图像中预测的主题和对象框的可视化，以确定主题和对象框是否适合查询的主题、对象和谓词。对于56%的图像/查询对，fast-RCNN已经识别出正确的主题和对象框。这说明不使用任何关系信息，就能在56%的时间里识别出正确的主题和对象框。</p>
-</li>
-<li><p>这表明数据集中存在明显的偏差，这就对该数据集中任何与baseline不相比较的已发表的参考关系结果提出了质疑。</p>
-</li>
-</ul>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>IRSG这一被大量引用的方法表现（Recall@k）未能超过baseline（object-only）（从图表上看几乎一致，IRSG略高一点），且似乎并没有使用object之间的信息，数据集（IRSG作者提供的）中存在可利用偏差。在干净的数据集上，IRSG模型和geometric mean model性能（Recall@k）基本一致（从图表上看IRSG略低一些）</p>
-<p>Krishna et al. (2018).的工作使用的VRD数据集也存在着可利用偏差（前面没有研究指出），但目前只考察了这一篇，另外几篇使用了VRD的还没revisit。</p>
-<p>今后的工作需要关注模型的学习内容和方式，数据集是否包含可利用偏见（exploitable bias）</p>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
       </tags>
   </entry>
   <entry>
