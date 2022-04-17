@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-04-17T16:28:03.042Z</updated>
+  <updated>2022-04-17T16:59:35.272Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Revisiting VG</title>
+    <link href="https://kkakkkka.github.io/2022/04/18/revisit-vg/"/>
+    <id>https://kkakkkka.github.io/2022/04/18/revisit-vg/</id>
+    <published>2022-04-17T16:58:30.000Z</published>
+    <updated>2022-04-17T16:59:35.272Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>rec</title>
