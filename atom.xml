@@ -54,11 +54,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Introduction-3&quot;&gt;Introduction&lt;/h2&gt;
-&lt;p&gt;VG：在图像中定位结构化描述的元素。&lt;/p&gt;
-&lt;p&gt;结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。&lt;/p&gt;
-&lt;h3 id=&quot;场景图&quot;&gt;场景图&lt;/h3&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -83,8 +79,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;Abstract&lt;/h2&gt;
-&lt;p&gt;引用表达式理解 (Referring expression</summary>
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h2&gt;&lt;p&gt;引用表达式理解 (Referring expression</summary>
         
       
     
@@ -109,7 +104,7 @@
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;已有研究&quot;&gt;&lt;a href=&quot;#已有研究&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -123,21 +118,21 @@
   </entry>
   
   <entry>
-    <title>test</title>
+    <title>线段树模板及常见应用</title>
     <link href="https://kkakkkka.github.io/2022/04/16/test/"/>
     <id>https://kkakkkka.github.io/2022/04/16/test/</id>
     <published>2022-04-16T10:18:22.000Z</published>
-    <updated>2022-04-16T13:01:00.067Z</updated>
+    <updated>2022-04-17T17:05:37.504Z</updated>
     
     
     <summary type="html">测试一下代码显示效果</summary>
     
     
     
-    <category term="杂七杂八" scheme="https://kkakkkka.github.io/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"/>
+    <category term="算法" scheme="https://kkakkkka.github.io/categories/%E7%AE%97%E6%B3%95/"/>
     
     
-    <category term="杂谈" scheme="https://kkakkkka.github.io/tags/%E6%9D%82%E8%B0%88/"/>
+    <category term="算法" scheme="https://kkakkkka.github.io/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
