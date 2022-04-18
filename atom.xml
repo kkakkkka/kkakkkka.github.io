@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-04-17T17:03:33.298Z</updated>
+  <updated>2022-04-18T02:27:22.304Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>打造你自己的集群</title>
+    <link href="https://kkakkkka.github.io/2022/04/18/build-small-cluster/"/>
+    <id>https://kkakkkka.github.io/2022/04/18/build-small-cluster/</id>
+    <published>2022-04-18T02:23:09.000Z</published>
+    <updated>2022-04-18T02:27:22.304Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;SYSU-ASC的选拔赛搭建系统题，因为升学计划改变，没有接着做优化题，最后也没有加入超算队，但从这些题目中学习了很多知识。&lt;br&gt;
+记录一下这些非常好的集群入门题。&lt;/p&gt;
+&lt;h2</summary>
+        
+      
+    
+    
+    
+    <category term="集群" scheme="https://kkakkkka.github.io/categories/%E9%9B%86%E7%BE%A4/"/>
+    
+    
+    <category term="集群" scheme="https://kkakkkka.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    
+  </entry>
   
   <entry>
     <title>Learning Transferable Visual Models From Natural Language Supervision</title>
@@ -54,7 +81,11 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;h2 id=&quot;Introduction-3&quot;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;VG：在图像中定位结构化描述的元素。&lt;/p&gt;
+&lt;p&gt;结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。&lt;/p&gt;
+&lt;h3 id=&quot;场景图&quot;&gt;场景图&lt;/h3&gt;
+&lt;p&gt;&lt;img</summary>
         
       
     
@@ -79,7 +110,8 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h2&gt;&lt;p&gt;引用表达式理解 (Referring expression</summary>
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;Abstract&lt;/h2&gt;
+&lt;p&gt;引用表达式理解 (Referring expression</summary>
         
       
     
@@ -104,7 +136,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;已有研究&quot;&gt;&lt;a href=&quot;#已有研究&quot; class=&quot;headerlink&quot;</summary>
+    <summary type="html">&lt;h2</summary>
         
       
     
