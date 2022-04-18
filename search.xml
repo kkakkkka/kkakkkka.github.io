@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Hello World</title>
+    <url>/2022/04/16/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+]]></content>
+      <categories>
+        <category>杂七杂八</category>
+      </categories>
+      <tags>
+        <tag>杂谈</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>打造你自己的集群</title>
     <url>/2022/04/18/build-small-cluster/</url>
     <content><![CDATA[<p>SYSU-SCC的选拔赛搭建系统题，因为升学计划改变，没有接着做优化题，最后也没有加入超算队，但从这些题目中学习了很多知识。记录一下这些非常好的集群入门题。</p>
@@ -1243,30 +1267,6 @@ sudo /sbin/chkconfig --add grafana-server<span aria-hidden="true" class="line-nu
       </tags>
   </entry>
   <entry>
-    <title>Hello World</title>
-    <url>/2022/04/16/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo server<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo generate<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ hexo deploy<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
-      <categories>
-        <category>杂七杂八</category>
-      </categories>
-      <tags>
-        <tag>杂谈</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>C++程序设计辅导-知识点总结</title>
     <url>/2022/04/19/help-cpp/</url>
     <content><![CDATA[<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><ul>
@@ -1384,7 +1384,7 @@ sudo /sbin/chkconfig --add grafana-server<span aria-hidden="true" class="line-nu
 <li>如果显式声明了复制构造函数、复制赋值运算符、移动构造函数、移动赋值运算符或析构函数</li>
 <li>不自动生成移动构造函数 </li>
 <li>不自动生成移动赋值运算符 </li>
-<li>放一个讲的很详细的链接（<a href="https://www.bilibili.com/read/cv13912639">https://www.bilibili.com/read/cv13912639</a> ）</li>
+<li>放一个讲的很详细的链接 <a href="https://www.bilibili.com/read/cv13912639">https://www.bilibili.com/read/cv13912639</a></li>
 </ul>
 </li>
 </ul>
@@ -1450,124 +1450,6 @@ sudo /sbin/chkconfig --add grafana-server<span aria-hidden="true" class="line-nu
       </categories>
       <tags>
         <tag>C++</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Learning Transferable Visual Models From Natural Language Supervision</title>
-    <url>/2022/04/18/learn-tvm-from-nlp/</url>
-    <content><![CDATA[<p>SOTA训练系统以预测一组固定的预定对象类别，这限制了CV系统的通用性，对于任何其他视觉概念，需要额外的标记数据来进行指定。</p>
-<p>从有关图像的原始文本中进行学习能够利用更加广泛的监督来源。本文证明了预测哪个标题与哪个图像搭配的简单预训练任务是一种有效且可扩展的方式，可以在从互联网收集的 4 亿（图像，文本）对的数据集上从头开始学习 SOTA  图像表示。</p>
-<p>在预训练之后，使用自然语言来文本表示学习的视觉概念（或描述新的概念），使模型能够零样本转移（zero-shot transfer）到下游任务。在大多数任务上，与完全监督学习的baseline相比具有竞争力，且无需任何特定的数据集。</p>
-<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>现有工作缺乏动态输出机制，削弱了灵活性，限制了零样本迁移能力</p>
-<p>对比语言图像预训练</p>
-<p>CLIP与GPT相似，优于最好的Imagenet模型，且计算效率更高</p>
-<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p><img src="/2022/04/18/learn-tvm-from-nlp/1647189274363.png" alt="1647189274363"></p>
-<p>方法的核心是从自然语言的监督中学习感知。</p>
-<p>从自然语言中学习的优势</p>
-<ul>
-<li>因为不需要采用经典的机器学习兼容格式（从N个选出1个），相较于用于图像分类的标准crowd-sourced labelling更加容易拓展</li>
-<li>不仅是学习一种表示，还能将表示与语言联系起来，实现灵活的零样本迁移</li>
-</ul>
-<h3 id="Pre-Training-Method"><a href="#Pre-Training-Method" class="headerlink" title="Pre-Training Method"></a>Pre-Training Method</h3><p>训练效率是最重要的，本文根据这一指标选择预训练方法</p>
-<p>仅预测整个文本与哪个图像配对，而不是该文本的确切单词</p>
-<p><img src="/2022/04/18/learn-tvm-from-nlp/1647224538268.png" alt="1647224538268"></p>
-<p>橙线和蓝线表示的方法试图预测每张图像所附文本的确切单词。这是一项艰巨的任务，因为与图像同时出现的描述、评论和相关文本种类繁多。可以看到本文提出的方法在效率上有很大的提升。</p>
-<p>对于给定的N个（图像，文本）对，CLIP用于预测NxN个对中哪个是实际发生的。</p>
-<p>CLIP学习得到一个多模态嵌入空间，通过图片编码器和文本编码器来最大化batch中的N个真实对的余弦相似度，同时最小化另外$N^2-N$个非正确对的余弦相似度。</p>
-<p>在相似度分数上，本文使用对称交叉熵损失进行优化</p>
-<p><img src="/2022/04/18/learn-tvm-from-nlp/1647225316655.png" alt="1647225316655"></p>
-<p>从头开始训练，没有使用ImageNet的权重或是文本编码器的预训练权重进行初始化。</p>
-<p>不使用表示和对比嵌入空间之间的非线性投影，只使用线性投影将每个编码器的表示映射到多模态嵌入空间。作者没有发现两个版本之间训练效率的差异，并推测非线性投影可能仅在自监督表示学习方法中与当前图像的细节共同适应。</p>
-<p>删除了Zhang et al.(2020)提出的文本转换函数 $t_u$（从文本中统一采样单个句子），因为 CLIP 预训练数据集中的许多（图像，文本）对中文本只是一个句子。</p>
-<p>简化了图像变化函数$t_v$，从resized的图片中随机裁剪正方形是训练阶段唯一使用的数据增强。</p>
-<p>用于控制softmax中logits的范围的温度参数$\tau$，在训练阶段直接优化为log-parameterized乘法标量，以避免将其作为超参数。</p>
-<h3 id="Choosing-and-Scaling-a-Model"><a href="#Choosing-and-Scaling-a-Model" class="headerlink" title="Choosing and Scaling a Model"></a>Choosing and Scaling a Model</h3><p>图像编码器</p>
-<ul>
-<li>ResNet-50<ul>
-<li>使用ResNet-D和抗锯齿 rect-2 模糊池进行了优化</li>
-<li>用注意力池机制替换了全局平均池层，实现形式为单层的多头QKV注意力，查询以图像的全局平均池表示为条件</li>
-</ul>
-</li>
-<li>ViT<ul>
-<li>在Transformer前面的combined patch和 position embeddings添加了一个额外的层归一化</li>
-<li>使用了略有不同的初始化方案</li>
-</ul>
-</li>
-</ul>
-<p>文本编码器</p>
-<ul>
-<li>Transformer，修改细节见Radford et al. (2019) <ul>
-<li>8 个注意力头，参数量63M，12 层，512-wide</li>
-<li>Transformer对文本的小写字节对编码 (BPE) 表示进行操作，词汇大小为 49,152 。</li>
-<li>为了计算效率，最大序列长度为76</li>
-<li>文本序列用 [SOS] 和 [EOS] 标记括起来，并且在 [EOS] 标记处转换器的最高层的激活被视为文本的特征表示，经过层归一化，然后线性投影到多-模态嵌入空间</li>
-<li>Masked self-attention 在文本编码器中使用，以保留使用预训练语言模型进行初始化或添加语言建模作为辅助目标的能力（这一步需要在未来工作进一步探索）</li>
-</ul>
-</li>
-</ul>
-<p>模型的缩放</p>
-<ul>
-<li>图像编码器<ul>
-<li>平均分配额外的计算以增加模型的宽度、深度和分辨率</li>
-</ul>
-</li>
-<li>文本编码器<ul>
-<li>只缩放模型的宽度，使其与计算的 ResNet 宽度增加成正比</li>
-<li>不缩放深度，CLIP 的性能对文本编码器的容量不太敏感</li>
-</ul>
-</li>
-</ul>
-<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>图像编码器（训练了32个epochs）</p>
-<ul>
-<li>ResNet-50</li>
-<li>ResNet-101</li>
-<li>RN50x4、RN50x16 和 RN50x64这三个EfficientNet-style model，分别使用 ResNet-50 的大约 4 倍、16 倍和 64 倍的计算。</li>
-<li>ViT-B/32</li>
-<li>ViT-B/16</li>
-<li>ViT-L/14</li>
-</ul>
-<p>优化器：Adam，在所有非增益或偏差的权重使用解耦权重衰减正则化，使用余弦调度调整学习率</p>
-<p>在训练 1 个 epoch 时，使用网格搜索、随机搜索和手动调整基线 ResNet50 模型的组合来设置初始超参数。</p>
-<p>可学习参数$\tau$初始化为0.07，并进行裁剪以防止将 logits 缩放超过 100</p>
-<p>一个非常大的minibatch size 32768，使用混合精度来加速训练、节省内存。</p>
-<p>为了节省额外的内存，梯度检测点使用了半精度 Adam 统计（Dhariwal 等人，2020）和半精度随机舍入文本编码器权重。</p>
-<h2 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h2><p>在CV领域，零样本学习是指在图像分类中泛化到看不见的对象类别的研究</p>
-<p>本文将零样本学习视为对看不见的数据集的泛化（这个看不见的数据集里面有没有未知的类别？）</p>
-<p>现有无监督学习领域的研究主要关注机器学习系统的表示学习能力，本文鼓励将零样本迁移作为衡量机器学习任务学习能力的一种方式。</p>
-<p>从这样的角度看，数据集评估了特定分布上任务的性能。但当前学界创建许多流行的CV数据集，主要是作为基准来指导通用图像分类方法的开发，而不是衡量特定任务的性能。</p>
-<p>在这些类型的数据集上，零样本迁移更多的是对 CLIP 对分布转移和域泛化的鲁棒性的评估，而不是任务泛化。</p>
-<p>Visual N-grams：</p>
-<ul>
-<li>首先将每个数据集的类名转换为其n-gram表示</li>
-<li>根据模型计算其概率，将对应的类别预测为最高的得分</li>
-</ul>
-<p>本文</p>
-<ul>
-<li>对每个数据集，使用数据集中所有类的名称作为潜在文本对的集合</li>
-<li>根据CLIP预测最可能的（图像，文本）对</li>
-</ul>
-<p>具体做法</p>
-<ul>
-<li>根据不同的编码器计算图像的特征嵌入和文本集的特征嵌入</li>
-<li>计算嵌入的余弦相似度，通过温度参数$\tau$进行缩放，通过softmax归一化为概率分布</li>
-<li>预测层是一个多项式逻辑回归分类器（具有L2归一化输入、L2归一化权重、无偏差和温度缩放）</li>
-</ul>
-<p>图像编码器是计算图像特征表示的计算机视觉主干，而文本编码器是一个超网络 (Ha et al.,  2016)，它根据指定文本的文本生成线性分类器的权重类所代表的视觉概念。</p>
-<p>CLIP 的零样本分类器是通过自然语言生成的，它允许直接指定的视觉概念。相比之下，常规的监督学习必须从训练样本中间接推断出概念。</p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>NLP预训练模型的成功在CV领域同样适用。CLIP模型在预训练阶段执行各种各样的预训练任务，以优化训练目标。然后可以通过自然语言提示利用此任务学习，以实现对许多现有数据集的零样本迁移。在规模足够大时，这种方法的性能与特定任务的监督学习相比具有竞争力，且仍有很大的改进空间。</p>
-<p>存在的问题</p>
-<ul>
-<li>CLIP的任务学习和迁移能力仍待提升</li>
-<li>需要提高计算效率，计算开销过大，性能未饱和</li>
-<li>在细粒度分类上的性能较差</li>
-<li>对解决深度学习模型泛化脆弱的潜在问题几乎没有作用，需要在庞大而多样的数据集上进行训练，使所有数据都能有效地分布</li>
-</ul>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
       </tags>
   </entry>
   <entry>
@@ -1813,6 +1695,124 @@ sudo /sbin/chkconfig --add grafana-server<span aria-hidden="true" class="line-nu
 <p><img src="/2022/04/18/rec/1647868665661.png" alt="1647868665661"></p>
 <p>COPS-REF上的结果</p>
 <p><img src="/2022/04/18/rec/1647868676707.png" alt="1647868676707"></p>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Learning Transferable Visual Models From Natural Language Supervision</title>
+    <url>/2022/04/18/learn-tvm-from-nlp/</url>
+    <content><![CDATA[<p>SOTA训练系统以预测一组固定的预定对象类别，这限制了CV系统的通用性，对于任何其他视觉概念，需要额外的标记数据来进行指定。</p>
+<p>从有关图像的原始文本中进行学习能够利用更加广泛的监督来源。本文证明了预测哪个标题与哪个图像搭配的简单预训练任务是一种有效且可扩展的方式，可以在从互联网收集的 4 亿（图像，文本）对的数据集上从头开始学习 SOTA  图像表示。</p>
+<p>在预训练之后，使用自然语言来文本表示学习的视觉概念（或描述新的概念），使模型能够零样本转移（zero-shot transfer）到下游任务。在大多数任务上，与完全监督学习的baseline相比具有竞争力，且无需任何特定的数据集。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>现有工作缺乏动态输出机制，削弱了灵活性，限制了零样本迁移能力</p>
+<p>对比语言图像预训练</p>
+<p>CLIP与GPT相似，优于最好的Imagenet模型，且计算效率更高</p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p><img src="/2022/04/18/learn-tvm-from-nlp/1647189274363.png" alt="1647189274363"></p>
+<p>方法的核心是从自然语言的监督中学习感知。</p>
+<p>从自然语言中学习的优势</p>
+<ul>
+<li>因为不需要采用经典的机器学习兼容格式（从N个选出1个），相较于用于图像分类的标准crowd-sourced labelling更加容易拓展</li>
+<li>不仅是学习一种表示，还能将表示与语言联系起来，实现灵活的零样本迁移</li>
+</ul>
+<h3 id="Pre-Training-Method"><a href="#Pre-Training-Method" class="headerlink" title="Pre-Training Method"></a>Pre-Training Method</h3><p>训练效率是最重要的，本文根据这一指标选择预训练方法</p>
+<p>仅预测整个文本与哪个图像配对，而不是该文本的确切单词</p>
+<p><img src="/2022/04/18/learn-tvm-from-nlp/1647224538268.png" alt="1647224538268"></p>
+<p>橙线和蓝线表示的方法试图预测每张图像所附文本的确切单词。这是一项艰巨的任务，因为与图像同时出现的描述、评论和相关文本种类繁多。可以看到本文提出的方法在效率上有很大的提升。</p>
+<p>对于给定的N个（图像，文本）对，CLIP用于预测NxN个对中哪个是实际发生的。</p>
+<p>CLIP学习得到一个多模态嵌入空间，通过图片编码器和文本编码器来最大化batch中的N个真实对的余弦相似度，同时最小化另外$N^2-N$个非正确对的余弦相似度。</p>
+<p>在相似度分数上，本文使用对称交叉熵损失进行优化</p>
+<p><img src="/2022/04/18/learn-tvm-from-nlp/1647225316655.png" alt="1647225316655"></p>
+<p>从头开始训练，没有使用ImageNet的权重或是文本编码器的预训练权重进行初始化。</p>
+<p>不使用表示和对比嵌入空间之间的非线性投影，只使用线性投影将每个编码器的表示映射到多模态嵌入空间。作者没有发现两个版本之间训练效率的差异，并推测非线性投影可能仅在自监督表示学习方法中与当前图像的细节共同适应。</p>
+<p>删除了Zhang et al.(2020)提出的文本转换函数 $t_u$（从文本中统一采样单个句子），因为 CLIP 预训练数据集中的许多（图像，文本）对中文本只是一个句子。</p>
+<p>简化了图像变化函数$t_v$，从resized的图片中随机裁剪正方形是训练阶段唯一使用的数据增强。</p>
+<p>用于控制softmax中logits的范围的温度参数$\tau$，在训练阶段直接优化为log-parameterized乘法标量，以避免将其作为超参数。</p>
+<h3 id="Choosing-and-Scaling-a-Model"><a href="#Choosing-and-Scaling-a-Model" class="headerlink" title="Choosing and Scaling a Model"></a>Choosing and Scaling a Model</h3><p>图像编码器</p>
+<ul>
+<li>ResNet-50<ul>
+<li>使用ResNet-D和抗锯齿 rect-2 模糊池进行了优化</li>
+<li>用注意力池机制替换了全局平均池层，实现形式为单层的多头QKV注意力，查询以图像的全局平均池表示为条件</li>
+</ul>
+</li>
+<li>ViT<ul>
+<li>在Transformer前面的combined patch和 position embeddings添加了一个额外的层归一化</li>
+<li>使用了略有不同的初始化方案</li>
+</ul>
+</li>
+</ul>
+<p>文本编码器</p>
+<ul>
+<li>Transformer，修改细节见Radford et al. (2019) <ul>
+<li>8 个注意力头，参数量63M，12 层，512-wide</li>
+<li>Transformer对文本的小写字节对编码 (BPE) 表示进行操作，词汇大小为 49,152 。</li>
+<li>为了计算效率，最大序列长度为76</li>
+<li>文本序列用 [SOS] 和 [EOS] 标记括起来，并且在 [EOS] 标记处转换器的最高层的激活被视为文本的特征表示，经过层归一化，然后线性投影到多-模态嵌入空间</li>
+<li>Masked self-attention 在文本编码器中使用，以保留使用预训练语言模型进行初始化或添加语言建模作为辅助目标的能力（这一步需要在未来工作进一步探索）</li>
+</ul>
+</li>
+</ul>
+<p>模型的缩放</p>
+<ul>
+<li>图像编码器<ul>
+<li>平均分配额外的计算以增加模型的宽度、深度和分辨率</li>
+</ul>
+</li>
+<li>文本编码器<ul>
+<li>只缩放模型的宽度，使其与计算的 ResNet 宽度增加成正比</li>
+<li>不缩放深度，CLIP 的性能对文本编码器的容量不太敏感</li>
+</ul>
+</li>
+</ul>
+<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>图像编码器（训练了32个epochs）</p>
+<ul>
+<li>ResNet-50</li>
+<li>ResNet-101</li>
+<li>RN50x4、RN50x16 和 RN50x64这三个EfficientNet-style model，分别使用 ResNet-50 的大约 4 倍、16 倍和 64 倍的计算。</li>
+<li>ViT-B/32</li>
+<li>ViT-B/16</li>
+<li>ViT-L/14</li>
+</ul>
+<p>优化器：Adam，在所有非增益或偏差的权重使用解耦权重衰减正则化，使用余弦调度调整学习率</p>
+<p>在训练 1 个 epoch 时，使用网格搜索、随机搜索和手动调整基线 ResNet50 模型的组合来设置初始超参数。</p>
+<p>可学习参数$\tau$初始化为0.07，并进行裁剪以防止将 logits 缩放超过 100</p>
+<p>一个非常大的minibatch size 32768，使用混合精度来加速训练、节省内存。</p>
+<p>为了节省额外的内存，梯度检测点使用了半精度 Adam 统计（Dhariwal 等人，2020）和半精度随机舍入文本编码器权重。</p>
+<h2 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h2><p>在CV领域，零样本学习是指在图像分类中泛化到看不见的对象类别的研究</p>
+<p>本文将零样本学习视为对看不见的数据集的泛化（这个看不见的数据集里面有没有未知的类别？）</p>
+<p>现有无监督学习领域的研究主要关注机器学习系统的表示学习能力，本文鼓励将零样本迁移作为衡量机器学习任务学习能力的一种方式。</p>
+<p>从这样的角度看，数据集评估了特定分布上任务的性能。但当前学界创建许多流行的CV数据集，主要是作为基准来指导通用图像分类方法的开发，而不是衡量特定任务的性能。</p>
+<p>在这些类型的数据集上，零样本迁移更多的是对 CLIP 对分布转移和域泛化的鲁棒性的评估，而不是任务泛化。</p>
+<p>Visual N-grams：</p>
+<ul>
+<li>首先将每个数据集的类名转换为其n-gram表示</li>
+<li>根据模型计算其概率，将对应的类别预测为最高的得分</li>
+</ul>
+<p>本文</p>
+<ul>
+<li>对每个数据集，使用数据集中所有类的名称作为潜在文本对的集合</li>
+<li>根据CLIP预测最可能的（图像，文本）对</li>
+</ul>
+<p>具体做法</p>
+<ul>
+<li>根据不同的编码器计算图像的特征嵌入和文本集的特征嵌入</li>
+<li>计算嵌入的余弦相似度，通过温度参数$\tau$进行缩放，通过softmax归一化为概率分布</li>
+<li>预测层是一个多项式逻辑回归分类器（具有L2归一化输入、L2归一化权重、无偏差和温度缩放）</li>
+</ul>
+<p>图像编码器是计算图像特征表示的计算机视觉主干，而文本编码器是一个超网络 (Ha et al.,  2016)，它根据指定文本的文本生成线性分类器的权重类所代表的视觉概念。</p>
+<p>CLIP 的零样本分类器是通过自然语言生成的，它允许直接指定的视觉概念。相比之下，常规的监督学习必须从训练样本中间接推断出概念。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>NLP预训练模型的成功在CV领域同样适用。CLIP模型在预训练阶段执行各种各样的预训练任务，以优化训练目标。然后可以通过自然语言提示利用此任务学习，以实现对许多现有数据集的零样本迁移。在规模足够大时，这种方法的性能与特定任务的监督学习相比具有竞争力，且仍有很大的改进空间。</p>
+<p>存在的问题</p>
+<ul>
+<li>CLIP的任务学习和迁移能力仍待提升</li>
+<li>需要提高计算效率，计算开销过大，性能未饱和</li>
+<li>在细粒度分类上的性能较差</li>
+<li>对解决深度学习模型泛化脆弱的潜在问题几乎没有作用，需要在庞大而多样的数据集上进行训练，使所有数据都能有效地分布</li>
+</ul>
 ]]></content>
       <categories>
         <category>深度学习</category>
