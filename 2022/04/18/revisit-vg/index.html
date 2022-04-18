@@ -5,13 +5,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="Revisiting VG, Python, C++, 爬虫, 深度学习, 并行与分布式">
-    <meta name="description" content="Introduction
-VG：在图像中定位结构化描述的元素。
+    <meta name="description" content="IntroductionVG：在图像中定位结构化描述的元素。
 结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。
 场景图
-
 给定一个场景图和一个输入图像，任务是创建与指定对象对应的边界框，使定位的对象具有指定的属性和关系。
-">
+en">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -508,41 +506,31 @@ VG：在图像中定位结构化描述的元素。
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="Introduction-3">Introduction</h2>
-<p>VG：在图像中定位结构化描述的元素。</p>
+                <h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>VG：在图像中定位结构化描述的元素。</p>
 <p>结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。</p>
-<h3 id="场景图">场景图</h3>
-<p><img src="1646963318842.png" alt="1646963318842"></p>
+<h3 id="场景图"><a href="#场景图" class="headerlink" title="场景图"></a>场景图</h3><p><img src="/2022/04/18/revisit-vg/1646963318842.png" alt="1646963318842"></p>
 <p>给定一个场景图和一个输入图像，任务是创建与指定对象对应的边界框，使定位的对象具有指定的属性和关系。</p>
 <p>energy score：反映场景图和定位框之间的匹配质量（lower is better），可用于在检索任务中对图像进行排名。</p>
-<h3 id="主谓宾三元组">主谓宾三元组</h3>
-<p><img src="1646963932294.png" alt="1646963932294"></p>
+<h3 id="主谓宾三元组"><a href="#主谓宾三元组" class="headerlink" title="主谓宾三元组"></a>主谓宾三元组</h3><p><img src="/2022/04/18/revisit-vg/1646963932294.png" alt="1646963932294"></p>
 <p>给定一个三元组和一个输入图像，任务是创建与命名的主题和对象相对应的边界框，以使得定位的框适合指定的谓词。</p>
-<h2 id="Image-Retrieval-Using-Scene-Graphs">Image Retrieval Using Scene Graphs</h2>
-<p>这一方法不执行任何语言分析，假定自然语言描述已经转换为场景图。</p>
+<h2 id="Image-Retrieval-Using-Scene-Graphs"><a href="#Image-Retrieval-Using-Scene-Graphs" class="headerlink" title="Image Retrieval Using Scene Graphs"></a>Image Retrieval Using Scene Graphs</h2><p>这一方法不执行任何语言分析，假定自然语言描述已经转换为场景图。</p>
 <p>训练方式：有监督训练，边框用对象类别和属性来标记，边框对用关系来标记。</p>
-<h3 id="原实验成果">原实验成果</h3>
-<ul>
-<li>
-<p>采用Recall@k作为评价指标</p>
+<h3 id="原实验成果"><a href="#原实验成果" class="headerlink" title="原实验成果"></a>原实验成果</h3><ul>
+<li><p>采用Recall@k作为评价指标</p>
 </li>
-<li>
-<p>优于一些baseline</p>
+<li><p>优于一些baseline</p>
 </li>
-<li>
-<p>相较于两种消融形式更好</p>
+<li><p>相较于两种消融形式更好</p>
 <ol>
 <li>只使用对象概率（忽略属性和关系概率）</li>
 <li>同时使用对象和属性概率，忽略关系概率</li>
 </ol>
 </li>
 </ul>
-<h3 id="Revisit-IRSG">Revisit IRSG</h3>
-<p>关注问题：</p>
+<h3 id="Revisit-IRSG"><a href="#Revisit-IRSG" class="headerlink" title="Revisit IRSG"></a>Revisit IRSG</h3><p>关注问题：</p>
 <ol>
 <li>除了使用对象信息之外，使用关系信息是否有助于系统的性能提升</li>
-<li>这一研究中使用的数据集中是否存在可利用偏差，类似于Cirik et al. (2018b)在Google-Ref 数据集上的发现
-<ul>
+<li>这一研究中使用的数据集中是否存在可利用偏差，类似于Cirik et al. (2018b)在Google-Ref 数据集上的发现<ul>
 <li>此处偏差的定义是：数据集本身允许学习算法依赖于浅层相关性，而不是实际解决预期的任务</li>
 </ul>
 </li>
@@ -570,27 +558,21 @@ VG：在图像中定位结构化描述的元素。
 <li>数据集中超过一半的positive test images存在偏差（例如，当给出诸如“穿着衬衫的站着的人”的查询时，不需要区分哪个是穿着“衬衫”的特定“站着的人”:每种只有一个。）</li>
 </ul>
 <p>在clean queries and data上结果相似。</p>
-<h3 id="Revisit-“Referring-Relationship”-Grounding">Revisit “Referring Relationship” Grounding</h3>
-<p>Krishna et al. (2018)使用迭代attention根据给定谓词在图像区域之间移动，以便定位主体和客体。</p>
+<h3 id="Revisit-“Referring-Relationship”-Grounding"><a href="#Revisit-“Referring-Relationship”-Grounding" class="headerlink" title="Revisit “Referring Relationship” Grounding"></a>Revisit “Referring Relationship” Grounding</h3><p>Krishna et al. (2018)使用迭代attention根据给定谓词在图像区域之间移动，以便定位主体和客体。</p>
 <p>评价指标：主题（subject）和对象（object）检测与真实边界框的平均交集(IOU)</p>
 <p>这一指标无法对检测率进行反馈。</p>
 <p>对比实验：</p>
 <ul>
-<li>
-<p>数据集：VRD</p>
+<li><p>数据集：VRD</p>
 </li>
-<li>
-<p>使用fast-RCNN进行目标检测，对每个测试图像运行fast-RCNN（微调预训练版本），并为每个查询选择主体和客体类别的最高可信度边界框。(如果查询主题和对象是相同的类别，我们将主题和对象随机分配到最高和第二高的置信度框中。)</p>
+<li><p>使用fast-RCNN进行目标检测，对每个测试图像运行fast-RCNN（微调预训练版本），并为每个查询选择主体和客体类别的最高可信度边界框。(如果查询主题和对象是相同的类别，我们将主题和对象随机分配到最高和第二高的置信度框中。)</p>
 </li>
-<li>
-<p>对于每个查询，我们手动检查每个测试图像中预测的主题和对象框的可视化，以确定主题和对象框是否适合查询的主题、对象和谓词。对于56%的图像/查询对，fast-RCNN已经识别出正确的主题和对象框。这说明不使用任何关系信息，就能在56%的时间里识别出正确的主题和对象框。</p>
+<li><p>对于每个查询，我们手动检查每个测试图像中预测的主题和对象框的可视化，以确定主题和对象框是否适合查询的主题、对象和谓词。对于56%的图像/查询对，fast-RCNN已经识别出正确的主题和对象框。这说明不使用任何关系信息，就能在56%的时间里识别出正确的主题和对象框。</p>
 </li>
-<li>
-<p>这表明数据集中存在明显的偏差，这就对该数据集中任何与baseline不相比较的已发表的参考关系结果提出了质疑。</p>
+<li><p>这表明数据集中存在明显的偏差，这就对该数据集中任何与baseline不相比较的已发表的参考关系结果提出了质疑。</p>
 </li>
 </ul>
-<h2 id="Conclusion-3">Conclusion</h2>
-<p>IRSG这一被大量引用的方法表现（Recall@k）未能超过baseline（object-only）（从图表上看几乎一致，IRSG略高一点），且似乎并没有使用object之间的信息，数据集（IRSG作者提供的）中存在可利用偏差。在干净的数据集上，IRSG模型和geometric mean model性能（Recall@k）基本一致（从图表上看IRSG略低一些）</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>IRSG这一被大量引用的方法表现（Recall@k）未能超过baseline（object-only）（从图表上看几乎一致，IRSG略高一点），且似乎并没有使用object之间的信息，数据集（IRSG作者提供的）中存在可利用偏差。在干净的数据集上，IRSG模型和geometric mean model性能（Recall@k）基本一致（从图表上看IRSG略低一些）</p>
 <p>Krishna et al. (2018).的工作使用的VRD数据集也存在着可利用偏差（前面没有研究指出），但目前只考察了这一篇，另外几篇使用了VRD的还没revisit。</p>
 <p>今后的工作需要关注模型的学习内容和方式，数据集是否包含可利用偏见（exploitable bias）</p>
 
@@ -1111,7 +1093,7 @@ VG：在图像中定位结构化描述的元素。
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">31.5k</span>
+                        class="white-color">31.4k</span>
             
             
             
