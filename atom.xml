@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-04-18T17:12:23.550Z</updated>
+  <updated>2022-04-19T17:41:42.945Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MDETR</title>
+    <link href="https://kkakkkka.github.io/2022/04/20/mdetr/"/>
+    <id>https://kkakkkka.github.io/2022/04/20/mdetr/</id>
+    <published>2022-04-19T17:40:11.000Z</published>
+    <updated>2022-04-19T17:41:42.945Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
   
   <entry>
     <title>C++程序设计辅导-知识点总结</title>
