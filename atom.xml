@@ -42,37 +42,11 @@
   </entry>
   
   <entry>
-    <title>打造你自己的集群</title>
-    <link href="https://kkakkkka.github.io/2022/04/18/build-small-cluster/"/>
-    <id>https://kkakkkka.github.io/2022/04/18/build-small-cluster/</id>
-    <published>2022-04-18T02:23:09.000Z</published>
-    <updated>2022-04-18T04:39:45.268Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;SYSU-SCC的选拔赛搭建系统题，因为升学计划改变，没有接着做优化题，最后也没有加入超算队，但从这些题目中学习了很多知识。记录一下这些非常好的集群入门题。&lt;/p&gt;
-&lt;h2 id=&quot;概览&quot;&gt;&lt;a href=&quot;#概览&quot; class=&quot;headerlink&quot;</summary>
-        
-      
-    
-    
-    
-    <category term="集群" scheme="https://kkakkkka.github.io/categories/%E9%9B%86%E7%BE%A4/"/>
-    
-    
-    <category term="集群" scheme="https://kkakkkka.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
-    
-  </entry>
-  
-  <entry>
     <title>Learning Transferable Visual Models From Natural Language Supervision</title>
-    <link href="https://kkakkkka.github.io/2022/04/18/learn-tvm-from-nlp/"/>
-    <id>https://kkakkkka.github.io/2022/04/18/learn-tvm-from-nlp/</id>
-    <published>2022-04-17T17:02:29.000Z</published>
-    <updated>2022-04-17T17:03:33.298Z</updated>
+    <link href="https://kkakkkka.github.io/2022/03/10/learn-tvm-from-nlp/"/>
+    <id>https://kkakkkka.github.io/2022/03/10/learn-tvm-from-nlp/</id>
+    <published>2022-03-09T17:02:29.000Z</published>
+    <updated>2022-04-19T16:24:43.220Z</updated>
     
     
       
@@ -94,36 +68,30 @@
   </entry>
   
   <entry>
-    <title>Revisiting VG</title>
-    <link href="https://kkakkkka.github.io/2022/04/18/revisit-vg/"/>
-    <id>https://kkakkkka.github.io/2022/04/18/revisit-vg/</id>
-    <published>2022-04-17T16:58:30.000Z</published>
-    <updated>2022-04-17T16:59:35.272Z</updated>
+    <title>线段树模板及常见应用</title>
+    <link href="https://kkakkkka.github.io/2022/03/06/test/"/>
+    <id>https://kkakkkka.github.io/2022/03/06/test/</id>
+    <published>2022-03-06T10:18:22.000Z</published>
+    <updated>2022-04-19T16:24:08.127Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
-        
-      
+    <summary type="html">测试一下代码显示效果</summary>
     
     
     
-    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    <category term="算法" scheme="https://kkakkkka.github.io/categories/%E7%AE%97%E6%B3%95/"/>
     
     
-    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    <category term="算法" scheme="https://kkakkkka.github.io/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
   <entry>
     <title>Reference Expression Comprehension</title>
-    <link href="https://kkakkkka.github.io/2022/04/18/rec/"/>
-    <id>https://kkakkkka.github.io/2022/04/18/rec/</id>
-    <published>2022-04-17T16:21:40.000Z</published>
-    <updated>2022-04-17T17:01:32.541Z</updated>
+    <link href="https://kkakkkka.github.io/2022/03/05/rec/"/>
+    <id>https://kkakkkka.github.io/2022/03/05/rec/</id>
+    <published>2022-03-04T16:21:40.000Z</published>
+    <updated>2022-04-19T16:24:27.167Z</updated>
     
     
       
@@ -144,11 +112,36 @@
   </entry>
   
   <entry>
+    <title>Revisiting VG</title>
+    <link href="https://kkakkkka.github.io/2022/03/04/revisit-vg/"/>
+    <id>https://kkakkkka.github.io/2022/03/04/revisit-vg/</id>
+    <published>2022-03-03T16:58:30.000Z</published>
+    <updated>2022-04-19T16:24:22.610Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Vision Transformer</title>
-    <link href="https://kkakkkka.github.io/2022/04/16/vit/"/>
-    <id>https://kkakkkka.github.io/2022/04/16/vit/</id>
-    <published>2022-04-16T12:45:40.000Z</published>
-    <updated>2022-04-17T17:01:06.119Z</updated>
+    <link href="https://kkakkkka.github.io/2022/03/02/vit/"/>
+    <id>https://kkakkkka.github.io/2022/03/02/vit/</id>
+    <published>2022-03-02T12:45:40.000Z</published>
+    <updated>2022-04-19T16:24:16.192Z</updated>
     
     
       
@@ -169,30 +162,62 @@
   </entry>
   
   <entry>
-    <title>线段树模板及常见应用</title>
-    <link href="https://kkakkkka.github.io/2022/04/16/test/"/>
-    <id>https://kkakkkka.github.io/2022/04/16/test/</id>
-    <published>2022-04-16T10:18:22.000Z</published>
-    <updated>2022-04-17T17:05:37.504Z</updated>
+    <title>打造你自己的集群</title>
+    <link href="https://kkakkkka.github.io/2022/03/01/build-small-cluster/"/>
+    <id>https://kkakkkka.github.io/2022/03/01/build-small-cluster/</id>
+    <published>2022-03-01T02:23:09.000Z</published>
+    <updated>2022-04-19T16:25:06.950Z</updated>
     
     
-    <summary type="html">测试一下代码显示效果</summary>
+      
+      
+        
+        
+    <summary type="html">&lt;p&gt;SYSU-SCC的选拔赛搭建系统题，因为升学计划改变，没有接着做优化题，最后也没有加入超算队，但从这些题目中学习了很多知识。记录一下这些非常好的集群入门题。&lt;/p&gt;
+&lt;h2 id=&quot;概览&quot;&gt;&lt;a href=&quot;#概览&quot; class=&quot;headerlink&quot;</summary>
+        
+      
     
     
     
-    <category term="算法" scheme="https://kkakkkka.github.io/categories/%E7%AE%97%E6%B3%95/"/>
+    <category term="集群" scheme="https://kkakkkka.github.io/categories/%E9%9B%86%E7%BE%A4/"/>
     
     
-    <category term="算法" scheme="https://kkakkkka.github.io/tags/%E7%AE%97%E6%B3%95/"/>
+    <category term="集群" scheme="https://kkakkkka.github.io/tags/%E9%9B%86%E7%BE%A4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Transformer</title>
+    <link href="https://kkakkkka.github.io/2022/02/27/transformer/"/>
+    <id>https://kkakkkka.github.io/2022/02/27/transformer/</id>
+    <published>2022-02-26T16:21:23.000Z</published>
+    <updated>2022-04-19T16:23:56.050Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;注意力机制&quot;&gt;&lt;a href=&quot;#注意力机制&quot; class=&quot;headerlink&quot; title=&quot;注意力机制&quot;&gt;&lt;/a&gt;注意力机制&lt;/h2&gt;&lt;h3 id=&quot;Memory-Based&quot;&gt;&lt;a href=&quot;#Memory-Based&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
   <entry>
     <title>Hello World</title>
-    <link href="https://kkakkkka.github.io/2022/04/16/hello-world/"/>
-    <id>https://kkakkkka.github.io/2022/04/16/hello-world/</id>
-    <published>2022-04-16T09:13:10.406Z</published>
-    <updated>2022-04-16T13:01:05.932Z</updated>
+    <link href="https://kkakkkka.github.io/2022/02/26/hello-world/"/>
+    <id>https://kkakkkka.github.io/2022/02/26/hello-world/</id>
+    <published>2022-02-25T16:46:53.000Z</published>
+    <updated>2022-04-19T16:25:01.357Z</updated>
     
     
       
