@@ -472,14 +472,14 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-file-word fa-fw"></i>文章字数:&nbsp;&nbsp;
-                    8.3k
+                    8.7k
                 </div>
                 
 
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    29 分
+                    31 分
                 </div>
                 
 
@@ -511,8 +511,10 @@
 <p>本文的贡献主要是提供了开发完全集成的多模式架构的思路，而不像过去那样依赖于黑盒目标检测器。</p>
 <p>优点</p>
 <ul>
-<li>不再受限于目标检测器的性能，直接从文本中学习视觉概念。</li>
+<li>结合多模态工作和DETR，得到一个具有良好泛化性的目标检测器，方案中检测目标的查询不再受到单模态数据集的标注限制</li>
+<li>MDETR并没有使用一些语言-视觉预训练工作的自监督策略(例如mask region classification)，而是设计了一套有监督的、将text-discription和object region对齐的预训练方案</li>
 <li>模型能够从自由格式的文本中检测细微的概念，并推广到未知的类别和属性组合。使用者不用纠结于”bicycle’和’’motorcycle”要不要整成一类来训练检测器这种问题。</li>
+<li>在使用更少数据的前提下，在一些任务上取得了SOTA的结果</li>
 </ul>
 <p>缺点</p>
 <ul>
@@ -539,10 +541,21 @@
 <h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><h3 id="DETR"><a href="#DETR" class="headerlink" title="DETR"></a>DETR</h3><p>方法基于DETR [2]，这是一种端到端检测模型，由主干网络（通常是卷积残差网络 [12]）和 Transformer Encoder-Decoder [59] 组成。</p>
 <p>DETR  编码器对来自主干的 2D 展开的图像特征进行操作，并应用一系列transformer层。解码器将一组包含N个学习嵌入称为对象查询作为输入，可以将其视为模型需要用检测到的对象填充的槽。所有的对象查询并行传送到解码器，解码器使用交叉注意力层查看编码图像并预测每个查询的输出嵌入。每个对象查询的最终表示使用共享的前馈层独立解码为目标框坐标和类标签。对象查询的数量是模型可以同时检测到的对象数量的上限。必须将它设置为在给定图像中可能会遇到的对象数量的足够大的上限。由于特定图像中的实际对象数可能小于查询数  N，因此我们使用对应于“no object”的额外类标签，记为∅。模型经过训练，可以为每个与对象不对应的查询输出这个额外类。</p>
 <p>DETR  使用<strong>匈牙利匹配损失</strong>进行训练，其中在 N  个提议的对象和真实对象之间计算二分匹配。每个匹配的对象都使用相应的目标作为ground truth进行监督，而未匹配的对象被监督以预测“no object”标签∅。分类头使用标准交叉熵进行监督，而边界框头使用绝对误差（L1  损失）和广义 IoU [48] 的组合进行监督。</p>
-<h3 id="MDETR"><a href="#MDETR" class="headerlink" title="MDETR"></a>MDETR</h3><p>与 DETR 一样，图像由卷积主干编码并执行扁平化（flatten）。2-D 位置嵌入被添加到这个扁平化的向量中以保存空间信息。使用预训练的转换器语言模型对文本进行编码，以生成与输入大小相同的隐藏向量序列。将模态相关的线性投影应用于图像和文本特征，以将它们投影到共享的嵌入空间中。然后将这些特征向量在序列维度上连接起来，以产生单个图像和文本特征序列。该序列被馈送到称为交叉编码器的联合变压器编码器。在 DETR  之后，MDETR在对象查询上应用transformer解码器，同时交叉关注交叉编码器的最终隐藏状态。解码器的输出用于预测实际的检测框。</p>
+<h3 id="MDETR"><a href="#MDETR" class="headerlink" title="MDETR"></a>MDETR</h3><p>与 DETR 一样，图像由卷积主干编码并执行扁平化（flatten）。2-D 位置嵌入被添加到这个扁平化的向量中以保存空间信息。使用预训练的transformer语言模型对文本进行编码，以生成与输入大小相同的隐藏向量序列。将模态相关的线性投影应用于图像和文本特征，以将它们投影到共享的嵌入空间中。然后将这些特征向量在序列维度上连接起来，以产生单个图像和文本特征序列。该序列被馈送到称为交叉编码器的联合变压器编码器。在 DETR  之后，MDETR在对象查询上应用transformer解码器，同时交叉关注交叉编码器的最终隐藏状态。解码器的输出用于预测实际的检测框。</p>
 <h3 id="损失函数"><a href="#损失函数" class="headerlink" title="损失函数"></a>损失函数</h3><p>MDETR 使用了两个附加的损失函数，用于鼓励图像和文本之间的对齐。它们都使用相同来源的注释：带有对齐边界框的自由格式文本。第一个损失函数是非参数对齐损失，称为soft token prediction loss。第二个损失函数是有参数损失函数，称为文本查询对比对齐，用于在对齐的对象查询和标记之间执行相似性。</p>
 <h4 id="Soft-token-prediction"><a href="#Soft-token-prediction" class="headerlink" title="Soft token prediction"></a>Soft token prediction</h4><p>调制检测与标准检测设置不同，我们对预测每个检测到的对象的分类类别不感兴趣，而是从引用每个匹配对象的原始文本中预测标记的跨度。具体来说，我们首先将任何给定句子的最大标记数设置为 L = 256。对于使用二分匹配与ground truth边界框匹配的每个预测框，该模型被训练以预测与对象对应的所有标记位置的均匀分布。</p>
-<p>下图展示了一个示例，其中cat的边界框被训练以预测前两个单词的均匀分布。MDETR 使用卷积主干提取视觉特征，使用 RoBERTa  等语言模型提取文本特征。两种模式的特征都被投影到一个共享的嵌入空间，连接起来并馈送到一个转换器编码器-解码器，该转换器预测对象的边界框及其在文本中的背景。</p>
+<p><strong>关于soft token prediction</strong></p>
+<ul>
+<li>‘soft’指不会直接预测每一个检测到的bbox的对应类别，而是预测image patch token对应的word token (来自原始输入的text)</li>
+<li>每一个text(或sentence)的长度(最大word token数)会被限制在256<ul>
+<li>256个token，对256个word token进行bbox的判断，是或不是（TODO</li>
+</ul>
+</li>
+<li>MDERT会计算bbox与每一个word token的相关度(bi-partite)，以下图为例,猫的bbox和前两个work token “a cat”产生了最强关联(uniform distribution)</li>
+<li>每个bbox和text关系的uniform distribution如下图所示</li>
+<li>特别注意：1) text中一些无对应bbox的word，会分配给一个“no object”。2) 一个word可能会对应多个bbox，例如”夫妻”可能对应到图像的两个bbox</li>
+</ul>
+<p>下图展示了一个示例，其中cat的边界框被训练以预测前两个单词的均匀分布。MDETR 使用卷积主干提取视觉特征，使用 RoBERTa  等语言模型提取文本特征。两种模式的特征都被投影到一个共享的嵌入空间，连接起来并馈送到一个transformer编码器-解码器，该转换器预测对象的边界框及其在文本中的背景。</p>
 <p><img src="/2022/04/20/mdetr/1650377504382.png" alt="1650377504382"></p>
 <p>在图 9 中，作者展示了这个例子的损失的简化可视化，考虑每个框的单词分布，但在应用中作者使用 BPE 方案 [52]  进行标记化之后使用标记跨度。任何与目标不匹配的查询都经过训练以预测“no object”标签∅。</p>
 <p><img src="/2022/04/20/mdetr/1650377968308.png" alt="1650377968308"></p>
@@ -551,6 +564,12 @@
 <h4 id="Contrastive-alignment"><a href="#Contrastive-alignment" class="headerlink" title="Contrastive alignment"></a>Contrastive alignment</h4><p>对比对齐（Contrastive alignment）虽然软标记预测（Soft token prediction）使用位置信息将对象与文本对齐，但【对比对齐损失】会强制【解码器输出处对象】的嵌入表示与【交叉编码器输出处】的文本表示之间对齐。与不相关标记的嵌入相比，这种额外的对比对齐损失确保（视觉）对象及其对应（文本）标记的嵌入在特征空间中更接近。这个约束比软标记预测损失更强，因为它直接对表示进行操作，而不是仅仅基于位置信息。</p>
 <p>更具体地说，考虑最大令牌数为 $L$ ，最大对象数为 $N$ 。令 $T^+<em>i$ 是给定对象 $o_i$ 应对齐的令牌集，$O^+<em>i$ 是要与给定令牌 $t_i$ 对齐的对象集。受  InfoNCE [40] 启发，所有对象的对比损失通过每个对象的正标记数进行归一化：<br>$$<br>l</em>{o}=\sum</em>{i=0}^{N-1} \frac{1}{\left|T_{i}^{+}\right|} \sum_{j \in T_{i}^{+}}-\log \left(\frac{\exp \left(o_{i}^{\top} t_{j} / \tau\right)}{\sum_{k=0}^{L-1} \exp \left(o_{i}^{\top} t_{k} / \tau\right)}\right)<br>$$<br>其中$\tau$是温度参数，根据文献[64, 47]设置为0.07。</p>
 <p>通过对称性，所有标记的对比损失，由每个标记的正对象数归一化，由下式给出：<br>$$<br>l_{t}=\sum_{i=0}^{L-1} \frac{1}{\left|O_{i}^{+}\right|} \sum_{j \in O_{i}^{+}}-\log \left(\frac{\exp \left(t_{i}^{\top} o_{j} / \tau\right)}{\sum_{k=0}^{N-1} \exp \left(t_{i}^{\top} o_{k} / \tau\right)}\right)<br>$$<br>我们将这两个损失函数的平均值作为对比对齐损失。</p>
+<p><strong>关于contrastive alignment</strong> </p>
+<ul>
+<li>这一项损失用来确保image在投影后能够和text共享embedding space，即添加一个Loss，让image feature在通过Transformer后的embedding和uniform distribution中关联最强的text的embedding进行对比计算。这里的对比损失来自于InfoNCE的启发，如公式1和2所示，其中o是object(bbox)对应的embedding，t是word对应的embedding</li>
+<li>公式（1）让 某一个bbox的embedding 和对应的 word token集合 的 embedding尽量趋近，而和其他的word token尽量不相似 </li>
+<li>公式（2）让 某一个word的embedding 和 对应的bbox token集合  的embedding尽量趋近，而和其他的bbox token尽量不相似</li>
+</ul>
 <h2 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h2><p>本节中描述了用于预训练 MDETR 的数据和训练，并提供了用来评估我们的方法的任务的详细信息和结果。</p>
 <p>CLEVR 数据集合成数据的实验和结果在4.1中描述，4.2中描述对真实世界图像的实验。</p>
 <h3 id="Synthetic-Images"><a href="#Synthetic-Images" class="headerlink" title="Synthetic Images"></a>Synthetic Images</h3><p>CLEVR  [20] 是一个合成数据集，旨在评估受控环境中的多模态模型。虽然按照现在的标准，这项任务的视觉理解部分是微不足道的，但主要挑战是理解问题，其中可能包含多达 20  个推理步骤，并将其中的关键短语与图像中的正确对象对齐。与 CLEVR [21, 17, 37, 68] 的几种成功方法不同，MDETR  没有包含任何特殊的归纳偏差来应对如此复杂的推理任务。在本节中，作者展示了尽管MDETR的公式相对简单，但本文的方法在问答任务上与最先进的模型竞争。</p>
@@ -570,7 +589,7 @@
 <p>在结合上，对于每张图像，作者从这些数据集中获取所有注释，并结合引用同一图像的文本，同时确保所有下游任务的验证或测试集中的所有图像都从训练集中删除。句子的组合是使用图着色算法完成的，该算法确保只组合具有  GIoU≤0.5 框的短语，并且组合句子的总长度小于 250 个字符。通过这种方式，作者得到了一个具有 130  万对齐的图像-文本对的数据集。这个组合步骤很重要，原因有两个：1）数据效率，通过将更多信息打包到单个训练示例中；2）它为我们的软标记预测损失提供了更好的学习信号，因为模型必须学会在多次出现的相同的对象类别，如图  4  所示。在单个句子的情况下，软标记预测任务变得微不足道，因为它总是可以在不查看图像的情况下预测句子的根（root）。通过实验，作者发现这种密集的注释可以转化为文本和图像之间更好的grounding，进而转化为更好的下游性能。</p>
 <p>如下图，注释组合产生了如下示例：“穿着灰色衬衫的人手腕上戴着手表。另一个穿着蓝色毛衣的人。第三个穿着灰色外套和围巾的人。“图像展示了模型对此caption的预测，它能够关注图像中的所有对象，然后根据文本消除它们之间的歧义。模型经过训练，可以将短语的词根预测为正标记跨度，正如在图中看到的那样，它正确地指代了三个不同的人。</p>
 <p><img src="/2022/04/20/mdetr/1650387355308.png" alt="1650387355308"></p>
-<p>在模型上，作者使用预训练的 RoBERTa-base [32] 作为文本编码器，具有 12 个转换器编码器层，每个具有 768 的隐藏维度和多头注意力中的 12  个头。作者采用了 HuggingFace [62] 的实现和权重。对于视觉骨干，作者探索了两个选项。第一个是在 ImageNet 上预训练的 ResNet-101  [12]，具有冻结的 batchnorm 层，取自 Torchvision。这可以与多模态理解领域的当前文献相媲美，其中流行的方法是使用 BUTD 对象检测器和  [1] 中在 VG 数据集上训练的 Resnet-101 主干。在本文的工作中，作者不受预训练检测器存在的限制，并受到其在目标检测 [58]  中的成功的启发，选择探索 EfficientNet 系列 [57] 作为主干。除了 ImageNet 之外，作者还使用了一个模型，该模型使用一种称为  Noisy-Student [65] 的伪标记技术对大量未标记数据进行了训练。作者选择了 EfficientNetB3，它在 ImageNet 上仅使用12M 的参数量就实现了  84.1% 的 top 1 准确率。作者使用了 Timm 库 [61] 提供的实现，并冻结 batchnorm 层。训练超参数在附录 A  中有详细说明。</p>
+<p>在模型上，作者使用预训练的 RoBERTa-base [32] 作为文本编码器，具有 12 个转换器编码器层，每个具有 768 的隐藏维度和多头注意力中的 12  个头。作者采用了 HuggingFace [62] 的实现和权重。对于视觉骨干，作者探索了两个选项。第一个是在 ImageNet 上预训练的 ResNet-101  [12]，具有冻结的 batchnorm 层，取自 Torchvision。这可以与多模态理解领域的最新研究相媲美，其中流行的方法是使用 BUTD 对象检测器和  [1] 中在 VG 数据集上训练的 Resnet-101 主干。在本文的工作中，作者不受预训练检测器存在的限制，并受到其在目标检测 [58]  中的成功的启发，选择探索 EfficientNet 系列 [57] 作为主干。除了 ImageNet 之外，作者还使用了一个模型，该模型使用一种称为  Noisy-Student [65] 的伪标记技术对大量未标记数据进行了训练。作者选择了 EfficientNetB3，它在 ImageNet 上仅使用12M 的参数量就实现了  84.1% 的 top 1 准确率。作者使用了 Timm 库 [61] 提供的实现，并冻结 batchnorm 层。训练超参数在附录 A  中有详细说明。</p>
 <p>在 4 个下游任务上方法的性能：</p>
 <ul>
 <li>Phrase grounding：给定一个或多个可能相互关联的短语，任务是为每个短语提供一组边界框。作者为此任务使用  Flickr30k 实体数据集，并使用 [46] 提供的训练/验证/测试集拆分，并根据 Recall@k 评估性能。对于测试集中的每个句子，作者预测 100  个边界框，并使用软标记对齐预测根据给予与短语对应的标记位置的分数对框进行排序。作者根据两个协议进行评估，将其命名为 ANY-BOX [26, 22] 和  MERGEDBOXES [44]。有关这两种协议的讨论，请参见附录 D。作者将他们的方法与两种方法的现有最先进结果进行比较——文本条件检测模型 [45, 67]  和基于转换器的视觉语言预训练模型 [26]。在 ANY-BOX 设置中，根据验证集上的 Recall@1 衡量，我们在此任务上获得了 8.5  点的提升，而不使用任何预训练（没有额外数据）。通过预训练，我们在测试集中的性能相较于使用相同骨干的SOTA进一步提高了 12.1 个百分点。</li>
@@ -1110,7 +1129,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">43.1k</span>
+                        class="white-color">43.5k</span>
             
             
             
