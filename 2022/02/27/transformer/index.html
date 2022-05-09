@@ -5,7 +5,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="keywords" content="Transformer, Python, C++, 爬虫, 深度学习, 并行与分布式">
-    <meta name="description" content="注意力机制Memory-BasedQKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是 question，v 是 answer，q 是新来的 question，看看历史">
+    <meta name="description" content="注意力机制
+Memory-Based
+QKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是 question，v 是 answer，q 是新来的 question，看看">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -479,7 +481,7 @@
                 
                 <div class="info-break-policy">
                     <i class="far fa-clock fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                    11 分
+                    12 分
                 </div>
                 
 
@@ -502,11 +504,12 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <h2 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h2><h3 id="Memory-Based"><a href="#Memory-Based" class="headerlink" title="Memory-Based"></a>Memory-Based</h3><p>QKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是 question，v 是 answer，q 是新来的 question，看看历史 memory 中 q 和哪个 k 更相似，根据相似度决定权重，使用k 对应的 v，合成当前 question 的 answer。</p>
+                <h2 id="注意力机制">注意力机制</h2>
+<h3 id="Memory-Based">Memory-Based</h3>
+<p>QKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是 question，v 是 answer，q 是新来的 question，看看历史 memory 中 q 和哪个 k 更相似，根据相似度决定权重，使用k 对应的 v，合成当前 question 的 answer。</p>
 <p>注意力函数是对一个query向量，让它和一系列的key向量-value向量对进行映射并输出结果的函数，输出是value的加权和，权重是key和query的相似度计算来的；即使key-value对不改变，随着query的改变，输出向量会不一样,但输出的维度是和value一样的。</p>
 <p>从本质上理解，Attention是从大量信息中有选择地筛选出少量重要信息并聚焦到这些重要信息上，忽略大多不重要的信息。聚焦的过程体现在权重系数的计算上，权重越大越聚焦于其对应的Value值上，即权重代表了信息的重要性，而Value是其对应的信息。</p>
 <img src="1645790269336.png" alt="1645790269336" style="zoom: 50%;">
-
 <p>工作流程：</p>
 <p>attention函数共有三步完成得到attention value。</p>
 <ul>
@@ -514,19 +517,25 @@
 <li>对上部权值归一化</li>
 <li>用归一化的权值与V加权求和</li>
 </ul>
-<p> 将Source中的构成元素想象成是由一系列的(Key,Value)数据对构成，此时给定Target中的某个元素Query，通过计算Query和各个Key的相似性或者相关性，得到每个Key对应Value的权重系数，然后对Value进行加权求和，即得到了最终的Attention数值。所以本质上Attention机制是对Source中元素的Value值进行加权求和，而Query和Key用来计算对应Value的权重系数。即可以将其本质思想改写为如下公式： </p>
-<p>$$<br>\text { Attention }\left(\text { Query }<em>{j}, \text { Source }\right)=\sum</em>{i=1}^{N} \text { Similarity }\left(\text { Query }<em>{j}, \text { Key }</em>{i}\right) * \text { Value }_{i}<br>$$</p>
+<p>将Source中的构成元素想象成是由一系列的(Key,Value)数据对构成，此时给定Target中的某个元素Query，通过计算Query和各个Key的相似性或者相关性，得到每个Key对应Value的权重系数，然后对Value进行加权求和，即得到了最终的Attention数值。所以本质上Attention机制是对Source中元素的Value值进行加权求和，而Query和Key用来计算对应Value的权重系数。即可以将其本质思想改写为如下公式：</p>
+<p>$$<br>
+\text { Attention }\left(\text { Query }<em>{j}, \text { Source }\right)=\sum</em>{i=1}^{N} \text { Similarity }\left(\text { Query }<em>{j}, \text { Key }</em>{i}\right) * \text { Value }_{i}<br>
+$$</p>
 <p>在自然语言任务中，往往K和V是相同的。这时计算出的attention value是一个向量，代表序列元素$xj$的编码向量。此向量中包含了元素$xj$的上下文关系，即包含全局联系也拥有局部联系。全局联系是因为在求相似度的时候，序列中元素与其他所有元素的相似度计算，然后加权得到了编码向量。局部联系可以这么解释，因为它所计算出的attention value是属于当前输入的$x_j$的。这也就是attention的强大优势之一，它可以灵活的捕捉长期和local依赖，而且是一步到位的。</p>
 <img src="1645791150589.png" alt="1645791150589" style="zoom: 50%;">
-
-<h3 id="Transformer中的使用"><a href="#Transformer中的使用" class="headerlink" title="Transformer中的使用"></a>Transformer中的使用</h3><ul>
-<li><p>对依赖项进行建模，无需考虑它们在输入/输出序列中的距离。</p>
+<h3 id="Transformer中的使用">Transformer中的使用</h3>
+<ul>
+<li>
+<p>对依赖项进行建模，无需考虑它们在输入/输出序列中的距离。</p>
 </li>
-<li><p>完全抛弃了卷积和递归，只使用注意力机制来构建输入和输出之间的全局依赖关系。</p>
+<li>
+<p>完全抛弃了卷积和递归，只使用注意力机制来构建输入和输出之间的全局依赖关系。</p>
 </li>
-<li><p>由于传统的卷积神经网络中，关联来自于任意两个输入/输出位置的信号所需的操作随着二者的位置之间的距离而增长，这使得网络更加难以学习远距离位置之间的依赖关系。Transformer能够将这样的操作减少到一个恒定的数目（任意两个单位之间的距离相同）。同时，考虑到平均注意力加权降低了有效分辨率的缺陷，Transformer采用了多头注意力机制。</p>
+<li>
+<p>由于传统的卷积神经网络中，关联来自于任意两个输入/输出位置的信号所需的操作随着二者的位置之间的距离而增长，这使得网络更加难以学习远距离位置之间的依赖关系。Transformer能够将这样的操作减少到一个恒定的数目（任意两个单位之间的距离相同）。同时，考虑到平均注意力加权降低了有效分辨率的缺陷，Transformer采用了多头注意力机制。</p>
 </li>
-<li><p>Self-Attention：一种将单个序列的不同位置关联起来以计算序列表示的注意力机制。</p>
+<li>
+<p>Self-Attention：一种将单个序列的不同位置关联起来以计算序列表示的注意力机制。</p>
 </li>
 </ul>
 <p><strong>优点</strong>：</p>
@@ -537,67 +546,87 @@
 </ul>
 <p><strong>缺点</strong>：</p>
 <ul>
-<li>Attention机制不是”distance-aware”的，它不能捕捉语序顺序，而在NLP中语序顺序是很重要的（对此，Transformer采用的处理方式是Position Encoding，在计算机视觉领域是如何解决的？查阅资料发现同样是采用Position Encoding进行解决的。（待读论文：Image Transformer、Vision Transformer）可否通过预训练使得模型具有识别图像序列顺序的能力？）</li>
+<li>Attention机制不是"distance-aware"的，它不能捕捉语序顺序，而在NLP中语序顺序是很重要的（对此，Transformer采用的处理方式是Position Encoding，在计算机视觉领域是如何解决的？查阅资料发现同样是采用Position Encoding进行解决的。（待读论文：Image Transformer、Vision Transformer）可否通过预训练使得模型具有识别图像序列顺序的能力？）</li>
 </ul>
-<h2 id="Encoder-Decoder"><a href="#Encoder-Decoder" class="headerlink" title="Encoder-Decoder"></a>Encoder-Decoder</h2><h3 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h3><img src="1645587474058.png" alt="1645587474058" style="zoom: 50%;">
-
+<h2 id="Encoder-Decoder">Encoder-Decoder</h2>
+<h3 id="结构图">结构图</h3>
+<img src="1645587474058.png" alt="1645587474058" style="zoom: 50%;">
 <p><strong>Example</strong>【 <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/364659780">Bert前篇：手把手带你详解Transformer原理 - 知乎 (zhihu.com)</a> 】：</p>
 <img src="v2-31a51936a0af60dd63e68c98e3a7ab0f_r.jpg" alt="preview" style="zoom: 50%;">
-
-<h3 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h3><p>由6个相同的层组成，每个层包括两个子层，第一个是多头自注意力机制，第二个是简单的position-wise全连接神经网络。在每个子层周围使用残差连接，然后进行层 normalization。每个sub-层的输出为$LayerNorm(x+Sublayer(x))$。</p>
+<h3 id="Encoder">Encoder</h3>
+<p>由6个相同的层组成，每个层包括两个子层，第一个是多头自注意力机制，第二个是简单的position-wise全连接神经网络。在每个子层周围使用残差连接，然后进行层 normalization。每个sub-层的输出为$LayerNorm(x+Sublayer(x))$。</p>
 <p><strong>Q：position-wise指的是什么？</strong></p>
-<p>解释一：区别于普通的全连接网络，这里FFN的输入是序列中每个位置上的元素，而不是整个序列，所以每个元素完全可以独立计算，最极端节省内存的做法是遍历序列，每次只取一个元素得到FFN的结果，但是这样做时间消耗太大，“分段”的含义就是做下折中，将序列分成子段，也就是多个子序列，每次读取一个子序列进行FFN计算，最后将多份的结果拼接。 </p>
+<p>解释一：区别于普通的全连接网络，这里FFN的输入是序列中每个位置上的元素，而不是整个序列，所以每个元素完全可以独立计算，最极端节省内存的做法是遍历序列，每次只取一个元素得到FFN的结果，但是这样做时间消耗太大，“分段”的含义就是做下折中，将序列分成子段，也就是多个子序列，每次读取一个子序列进行FFN计算，最后将多份的结果拼接。</p>
 <p>解释二： 从卷积的角度解释，这里的FFN等价于kernel_size=1的卷积，这样每个position都是独立运算的。如果kernel_size=2，或者其他，position之间就具有依赖性了，不能叫做position-wise了。</p>
-<h3 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h3><p>同样是6个相同的层组成，但是每个层包括三个子层，第三个sub-层用于对Encoder堆栈的输出执行多头注意力机制。残差连接与Encoder相同。修改了注意力层以避免当前位置继续参与（attend）到后面的位置中。</p>
+<h3 id="Decoder">Decoder</h3>
+<p>同样是6个相同的层组成，但是每个层包括三个子层，第三个sub-层用于对Encoder堆栈的输出执行多头注意力机制。残差连接与Encoder相同。修改了注意力层以避免当前位置继续参与（attend）到后面的位置中。</p>
 <p><strong>Mask</strong>：Mask操作是为了避免解码器在训练的时候看到当前时刻看到以后时间的信息。</p>
 <p>对于t时刻的query，应该只看到key(1), key(2),…key(t-1)的数据，因为key(t)在当前时刻还不存在。</p>
 <p>Masked的作用是使对应value的权值为0，对于query(t)和未来时刻的key的内积，赋值为负无穷大（-inf），这样使用softmax计算权值为0，所以计算output的时候只用到了t-1以前时刻的key-value pair的信息。保证了训练时和预测时的情况是一样的。</p>
 <img src="1645862082581.png" alt="1645862082581" style="zoom: 33%;">
-
 <p>mask的具体做法：（ <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/364659780">Bert前篇：手把手带你详解Transformer原理 - 知乎 (zhihu.com)</a> ）</p>
-<p><img src="/2022/02/27/transformer/1645865219155.png" alt="1645865219155"></p>
-<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><img src="1645778258219.png" alt="1645778258219" style="zoom: 67%;">
-
-<h3 id="Scaled-Dot-Product-Attention"><a href="#Scaled-Dot-Product-Attention" class="headerlink" title="Scaled Dot-Product Attention"></a>Scaled Dot-Product Attention</h3><p>输入由维度为$d_k$的queries和key以及维度为$d_v$的values组成。使用所有keys计算queries的点积，并除以$\sqrt{d_k}$，然后用softmax函数获得与values相乘的权重。公式如下：</p>
-<p>$$<br>\text { Attention }(Q, K, V)=\operatorname{softmax}\left(\frac{Q K^{T}}{\sqrt{d_{k}}}\right) V<br>$$<br><strong>做法含义</strong>： 向量内积是一个向量在另一个向量上的投影长度乘以另一个向量的长度。内积的几何意义是一个向量在另一个向量上的投影，进而内积越大说明相似度越高。</p>
+<p><img src="1645865219155.png" alt="1645865219155"></p>
+<h2 id="Attention">Attention</h2>
+<img src="1645778258219.png" alt="1645778258219" style="zoom: 67%;">
+<h3 id="Scaled-Dot-Product-Attention">Scaled Dot-Product Attention</h3>
+<p>输入由维度为$d_k$的queries和key以及维度为$d_v$的values组成。使用所有keys计算queries的点积，并除以$\sqrt{d_k}$，然后用softmax函数获得与values相乘的权重。公式如下：</p>
+<p>$$<br>
+\text { Attention }(Q, K, V)=\operatorname{softmax}\left(\frac{Q K^{T}}{\sqrt{d_{k}}}\right) V<br>
+$$<br>
+<strong>做法含义</strong>： 向量内积是一个向量在另一个向量上的投影长度乘以另一个向量的长度。内积的几何意义是一个向量在另一个向量上的投影，进而内积越大说明相似度越高。</p>
 <p>对于attention中计算两个向量之间的相关度，两个常用函数为Additive attention和dot-product（multiple） attention。点积从公式中可以体现出来，Additive attention是使用一个前馈神经网络（只含一个隐藏层）来计算兼容性函数。</p>
 <p>二者优缺点分析：dot-product attention，可以利用矩阵运算，计算速度更快，并且更节省空间，但是要求 Q 和 K向量维度相同，如果不同需要进行一定的映射变换。在dk较小时二者表现相似，但是dk较大时，dot-product attention表现不如additive attention，因为dk较大时点积之后的结果较大，求softmax之后，梯度会很小，不利于计算，需要做一定的缩放。</p>
 <p>知乎：较长的序列（512）会导致QK的内积的方差很大，相对差距变大，极值做出来softmax会倾向于1， 计算的梯度接近0，导致难以学习，除以sqrt(dk)可以避免这种情况。</p>
 <p>参考：</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/70905e28d662">Additive Attention 和 Dot-product Attention</a> </li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/70905e28d662">Additive Attention 和 Dot-product Attention</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/434357918">Transformer论文详解——想不懂都难 - 知乎 (zhihu.com)</a></li>
 </ul>
 <p><strong>作者采用的方案以及性能上的讨论</strong>：由于dot-product可以用高性能的矩阵乘法进行优化，计算速度快，空间上也更优，作者采用了dot-product。当$d_k$较小的时候，两种机制表现相近，Additive在$d_k$值较大的时候，无需对其缩放，因此性能优于dot-product。作者的观点是对于较大的$d_k$，dot-product在规模（magnitude）上会更大，这将softmax函数推入了极小梯度的区域。因此他们在公式中进行了除以$\sqrt{d_k}$这样一个缩放。</p>
-<h3 id="Multi-Head-Attention"><a href="#Multi-Head-Attention" class="headerlink" title="Multi-Head Attention"></a>Multi-Head Attention</h3><p><strong>原理</strong>：与对keys、values、queries使用一个注意力机制不同，作者提出了一种更有效的方法：使用不同的线性投影，将queries、keys、values分别投影到$d_k$、$d_k$、$d_v$维（进行h次），然后在投影之后的queries、keys、values上并行执行attention function，得到维度为$d_v$的输出，然后将他们连接（concat）起来后再次投影产生最终值。	</p>
-<p> <img src="/2022/02/27/transformer/v2-70a3f25fa1b618ecd9811567daca4ec9_r.jpg" alt="img"> </p>
+<h3 id="Multi-Head-Attention">Multi-Head Attention</h3>
+<p><strong>原理</strong>：与对keys、values、queries使用一个注意力机制不同，作者提出了一种更有效的方法：使用不同的线性投影，将queries、keys、values分别投影到$d_k$、$d_k$、$d_v$维（进行h次），然后在投影之后的queries、keys、values上并行执行attention function，得到维度为$d_v$的输出，然后将他们连接（concat）起来后再次投影产生最终值。</p>
+<p><img src="v2-70a3f25fa1b618ecd9811567daca4ec9_r.jpg" alt="img"></p>
 <p><strong>优点</strong>：允许模型共同关注来自不同位置的不同表示子空间的信息，对于单个注意力头，平均化会抑制这一点。</p>
-<p><img src="/2022/02/27/transformer/1645781140551.png" alt="1645781140551"></p>
+<p><img src="1645781140551.png" alt="1645781140551"></p>
 <p><strong>实验参数</strong>：$h=8,d_k=d_v=d_{model}/h=64$</p>
 <p><strong>性能讨论</strong>：由于每个头维度减少，总体计算量与单头注意力机制近似。</p>
-<h3 id="Position-wise-Feed-Forward-Network"><a href="#Position-wise-Feed-Forward-Network" class="headerlink" title="Position-wise Feed-Forward Network"></a>Position-wise Feed-Forward Network</h3><p>除了注意力子层外，编码器与编码器中的每一层都包含一个全连接的前馈神经网络，分别相同应用于每个位置。包含两个线性变化，二者之间有一个ReLU激活函数。<br>$$<br>\operatorname{FFN}(x)=\max \left(0, x W_{1}+b_{1}\right) W_{2}+b_{2}<br>$$<br>transformer抽取序列信息：attention把序列里的信息抓取出来，在每个点做了一次全局的汇聚，里面包含了感兴趣的序列信息，以至于后面经过mlp做投影，把向量映射到更想要的语义空间，因为每个点都包含了序列相关信息，所以对每个点独立做MLP就可以了，这就是transformer如何抽取“序列信息”并加工的方法。</p>
+<h3 id="Position-wise-Feed-Forward-Network">Position-wise Feed-Forward Network</h3>
+<p>除了注意力子层外，编码器与编码器中的每一层都包含一个全连接的前馈神经网络，分别相同应用于每个位置。包含两个线性变化，二者之间有一个ReLU激活函数。<br>
+$$<br>
+\operatorname{FFN}(x)=\max \left(0, x W_{1}+b_{1}\right) W_{2}+b_{2}<br>
+$$<br>
+transformer抽取序列信息：attention把序列里的信息抓取出来，在每个点做了一次全局的汇聚，里面包含了感兴趣的序列信息，以至于后面经过mlp做投影，把向量映射到更想要的语义空间，因为每个点都包含了序列相关信息，所以对每个点独立做MLP就可以了，这就是transformer如何抽取“序列信息”并加工的方法。</p>
 <p>RNN抽取序列信息：MLP权重W是共用的，时序信息是通过把上一个时刻的输出接到当前时刻，与当前时刻的输入合并，再经过MLP,实现了序列信息的汇聚和提取。</p>
 <p>区别：都是用MLP实现语义空间的转换，不一样的是如何传递“序列信息”。</p>
 <img src="1645863103955.png" alt="1645863103955" style="zoom: 33%;">
-
 <p><strong>实验参数</strong>：</p>
 <ul>
 <li>输入/输出维度$d_{model}=512$</li>
 <li>inner-层维度$d_{ff}=2048$</li>
 </ul>
-<h3 id="Embedding-amp-Softmax"><a href="#Embedding-amp-Softmax" class="headerlink" title="Embedding &amp; Softmax"></a>Embedding &amp; Softmax</h3><p>通过学习好的Embedding将输入/输出token转换为维度为$d_{model}$的向量。在嵌入层中，作者对权重乘以$\sqrt{d_{model}}$</p>
+<h3 id="Embedding-Softmax">Embedding &amp; Softmax</h3>
+<p>通过学习好的Embedding将输入/输出token转换为维度为$d_{model}$的向量。在嵌入层中，作者对权重乘以$\sqrt{d_{model}}$</p>
 <p>原因：Embedding的分布往往是$N(1, \frac{1}{\sqrt{d_{model}}})$</p>
-<h3 id="Position-Encoding"><a href="#Position-Encoding" class="headerlink" title="Position Encoding"></a>Position Encoding</h3><p>为了让模型利用序列的顺序，需要在序列中注入关于序列的相对或绝对位置的信息。</p>
+<h3 id="Position-Encoding">Position Encoding</h3>
+<p>为了让模型利用序列的顺序，需要在序列中注入关于序列的相对或绝对位置的信息。</p>
 <p><strong>做法</strong>：在解码器/编码器的堆栈底部加入位置编码（Position Encoding）。位置编码与Embedding具有相同的维度$d_{model}$，二者可以直接相加。位置编码可以有多种选择，通过学习得到的（learned）或是固定的（fixed）。Transformer采用绝对位置编码。</p>
-<p>在这里论文中使用了$sin$和$cos$函数的线性变换来提供给模型位置信息:<br>$$<br>\begin{aligned}<br>P E_{(p o s, 2 i)} &amp;=\sin \left(p o s / 10000^{2 i / d_{\text {model }}}\right) \<br>P E_{(p o s, 2 i+1)} &amp;=\cos \left(p o s / 10000^{2 i / d_{\text {model }}}\right)<br>\end{aligned}<br>$$</p>
-<h3 id="为何使用self-attention"><a href="#为何使用self-attention" class="headerlink" title="为何使用self-attention"></a>为何使用self-attention</h3><ul>
+<p>在这里论文中使用了$sin$和$cos$函数的线性变换来提供给模型位置信息:<br>
+$$<br>
+\begin{aligned}<br>
+P E_{(p o s, 2 i)} &amp;=\sin \left(p o s / 10000^{2 i / d_{\text {model }}}\right) \<br>
+P E_{(p o s, 2 i+1)} &amp;=\cos \left(p o s / 10000^{2 i / d_{\text {model }}}\right)<br>
+\end{aligned}<br>
+$$</p>
+<h3 id="为何使用self-attention">为何使用self-attention</h3>
+<ul>
 <li>每层的总计算复杂度</li>
 <li>可并行性</li>
 <li>网络中远程依赖项之间的路径长度</li>
 </ul>
-<p> <img src="/2022/02/27/transformer/v2-197559ccb4049ff985e6f095a68a5c37_r.jpg" alt="img"> </p>
-<p> <img src="/2022/02/27/transformer/v2-3ce7a8eea027f468ea0d8926b8f149b5_r.jpg" alt="img"> </p>
-<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
+<p><img src="v2-197559ccb4049ff985e6f095a68a5c37_r.jpg" alt="img"></p>
+<p><img src="v2-3ce7a8eea027f468ea0d8926b8f149b5_r.jpg" alt="img"></p>
+<h2 id="优点">优点</h2>
+<ol>
 <li>并行效率高：相较于RNN 第t时间步的隐藏状态ht要等前一个时间步ht-1的隐藏状态输出之后才能处理； Transformer同时提取所有上下文的信息。</li>
 <li>信息传递损失小： RNN在序列过长会导致梯度爆炸或梯度消失或遗忘，RNN改进模型LSTM和GRU能够部分解决梯度消失的问题。transformer获取所有位置的信息的距离都是1。</li>
 <li>信息融合效率高：卷积每次看比较小的窗口，对于距离较远的像素，需要很多层卷积一层一层扩大感受野才能把两个像素融合起来。transformer获取所有位置的信息的距离都是1。</li>
@@ -928,8 +957,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/%E6%9D%82%E8%B0%88/">
-                        <span class="chip bg-color">杂谈</span>
+                    <a href="/tags/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/">
+                        <span class="chip bg-color">杂七杂八</span>
                     </a>
                     
                 </div>
@@ -1120,7 +1149,7 @@
             <br>
             
                 &nbsp;<i class="fas fa-chart-area"></i>&nbsp;站点总字数:&nbsp;<span
-                        class="white-color">43.7k</span>
+                        class="white-color">43.8k</span>
             
             
             
