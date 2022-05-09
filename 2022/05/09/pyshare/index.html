@@ -508,21 +508,21 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <h2 id="一行Python指令实现文件共享"><a href="#一行Python指令实现文件共享" class="headerlink" title="一行Python指令实现文件共享"></a>一行Python指令实现文件共享</h2><p>首先在终端切换到需要共享的文件目录</p>
-<p><img src="/pyshare/1652073769778.png" alt="1652073769778"></p>
+<p><img src="/2022/05/09/pyshare/1652073769778.png" alt="1652073769778"></p>
 <h3 id="输入指令"><a href="#输入指令" class="headerlink" title="输入指令"></a>输入指令</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">python <span class="token operator">-</span>m http<span class="token punctuation">.</span>server <span class="token number">31142</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p> 把电脑的文件通过 http 协议共享出去，<code>31142</code>是端口，这里可以任意指定没有被占用的端口。 </p>
 <p> 出现如下界面，即为共享成功。</p>
-<p><img src="/pyshare/1652073798053.png" alt="1652073951054"></p>
+<p><img src="/2022/05/09/pyshare/1652073798053.png" alt="1652073951054"></p>
 <h3 id="访问文件"><a href="#访问文件" class="headerlink" title="访问文件"></a>访问文件</h3><p>对于本机，在浏览器访问网址</p>
 <pre class="line-numbers language-none"><code class="language-none">http://localhost:31142<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
 <p>界面如下，可以看到文件夹下的目录</p>
-<p><img src="/pyshare/1652073951054.png" alt="1652073951054"></p>
+<p><img src="/2022/05/09/pyshare/1652073951054.png" alt="1652073951054"></p>
 <p>也可以找到本机的 ip地址，将 <code>localhost</code> 替换成 ip地址即可访问。这一方法对于连接上同一网络的局域网内其他机器来说也同样适用：</p>
 <pre class="line-numbers language-none"><code class="language-none">http://172.xx.xxx.xxx:31142<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
 
-<p><img src="/pyshare/1652074234803.png" alt="1652074234803"></p>
+<p><img src="/2022/05/09/pyshare/1652074234803.png" alt="1652074234803"></p>
 
                 
             </div>
