@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-04-20T14:01:44.222Z</updated>
+  <updated>2022-05-09T05:34:25.648Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>一行Python指令实现文件共享</title>
+    <link href="https://kkakkkka.github.io/2022/05/09/pyshare/"/>
+    <id>https://kkakkkka.github.io/2022/05/09/pyshare/</id>
+    <published>2022-05-09T05:20:40.000Z</published>
+    <updated>2022-05-09T05:34:25.648Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;一行Python指令实现文件共享&quot;&gt;&lt;a href=&quot;#一行Python指令实现文件共享&quot; class=&quot;headerlink&quot;</summary>
+        
+      
+    
+    
+    
+    <category term="杂七杂八" scheme="https://kkakkkka.github.io/categories/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"/>
+    
+    
+    <category term="杂七杂八" scheme="https://kkakkkka.github.io/tags/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB/"/>
+    
+  </entry>
   
   <entry>
     <title>MDETR - Modulated Detection for End-to-End Multi-Modal Understanding</title>
