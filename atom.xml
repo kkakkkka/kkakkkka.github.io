@@ -28,10 +28,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;一行Python指令实现文件共享&quot;&gt;一行Python指令实现文件共享&lt;/h2&gt;
-&lt;p&gt;首先在终端切换到需要共享的文件目录&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;1652073769778.png&quot; alt=&quot;1652073769778&quot;&gt;&lt;/p&gt;
-&lt;h3</summary>
+    <summary type="html">&lt;h2 id=&quot;一行Python指令实现文件共享&quot;&gt;&lt;a href=&quot;#一行Python指令实现文件共享&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -56,7 +53,7 @@
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -81,7 +78,7 @@
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;第一周&quot;&gt;&lt;a href=&quot;#第一周&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -151,8 +148,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Abstract-2&quot;&gt;Abstract&lt;/h2&gt;
-&lt;p&gt;引用表达式理解 (Referring expression</summary>
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h2&gt;&lt;p&gt;引用表达式理解 (Referring expression</summary>
         
       
     
@@ -177,11 +173,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Introduction-3&quot;&gt;Introduction&lt;/h2&gt;
-&lt;p&gt;VG：在图像中定位结构化描述的元素。&lt;/p&gt;
-&lt;p&gt;结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。&lt;/p&gt;
-&lt;h3 id=&quot;场景图&quot;&gt;场景图&lt;/h3&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -206,7 +198,7 @@
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;已有研究&quot;&gt;&lt;a href=&quot;#已有研究&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -232,7 +224,7 @@
         
         
     <summary type="html">&lt;p&gt;SYSU-SCC的选拔赛搭建系统题，因为升学计划改变，没有接着做优化题，最后也没有加入超算队，但从这些题目中学习了很多知识。记录一下这些非常好的集群入门题。&lt;/p&gt;
-&lt;h2</summary>
+&lt;h2 id=&quot;概览&quot;&gt;&lt;a href=&quot;#概览&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -257,9 +249,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;注意力机制&quot;&gt;注意力机制&lt;/h2&gt;
-&lt;h3 id=&quot;Memory-Based&quot;&gt;Memory-Based&lt;/h3&gt;
-&lt;p&gt;QKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是</summary>
+    <summary type="html">&lt;h2 id=&quot;注意力机制&quot;&gt;&lt;a href=&quot;#注意力机制&quot; class=&quot;headerlink&quot; title=&quot;注意力机制&quot;&gt;&lt;/a&gt;注意力机制&lt;/h2&gt;&lt;h3 id=&quot;Memory-Based&quot;&gt;&lt;a href=&quot;#Memory-Based&quot;</summary>
         
       
     
