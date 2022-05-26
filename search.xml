@@ -210,6 +210,151 @@
       </tags>
   </entry>
   <entry>
+    <title>Learning Transferable Visual Models From Natural Language Supervision</title>
+    <url>/2022/03/10/learn-tvm-from-nlp/</url>
+    <content><![CDATA[<p>SOTA训练系统以预测一组固定的预定对象类别，这限制了CV系统的通用性，对于任何其他视觉概念，需要额外的标记数据来进行指定。</p>
+<p>从有关图像的原始文本中进行学习能够利用更加广泛的监督来源。本文证明了预测哪个标题与哪个图像搭配的简单预训练任务是一种有效且可扩展的方式，可以在从互联网收集的 4 亿（图像，文本）对的数据集上从头开始学习 SOTA  图像表示。</p>
+<p>在预训练之后，使用自然语言来文本表示学习的视觉概念（或描述新的概念），使模型能够零样本转移（zero-shot transfer）到下游任务。在大多数任务上，与完全监督学习的baseline相比具有竞争力，且无需任何特定的数据集。</p>
+<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>现有工作缺乏动态输出机制，削弱了灵活性，限制了零样本迁移能力</p>
+<p>对比语言图像预训练</p>
+<p>CLIP与GPT相似，优于最好的Imagenet模型，且计算效率更高</p>
+<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p><img src="/2022/03/10/learn-tvm-from-nlp/1647189274363.png" alt="1647189274363"></p>
+<p>方法的核心是从自然语言的监督中学习感知。</p>
+<p>从自然语言中学习的优势</p>
+<ul>
+<li>因为不需要采用经典的机器学习兼容格式（从N个选出1个），相较于用于图像分类的标准crowd-sourced labelling更加容易拓展</li>
+<li>不仅是学习一种表示，还能将表示与语言联系起来，实现灵活的零样本迁移</li>
+</ul>
+<h3 id="Pre-Training-Method"><a href="#Pre-Training-Method" class="headerlink" title="Pre-Training Method"></a>Pre-Training Method</h3><p>训练效率是最重要的，本文根据这一指标选择预训练方法</p>
+<p>仅预测整个文本与哪个图像配对，而不是该文本的确切单词</p>
+<p><img src="/2022/03/10/learn-tvm-from-nlp/1647224538268.png" alt="1647224538268"></p>
+<p>橙线和蓝线表示的方法试图预测每张图像所附文本的确切单词。这是一项艰巨的任务，因为与图像同时出现的描述、评论和相关文本种类繁多。可以看到本文提出的方法在效率上有很大的提升。</p>
+<p>对于给定的N个（图像，文本）对，CLIP用于预测NxN个对中哪个是实际发生的。</p>
+<p>CLIP学习得到一个多模态嵌入空间，通过图片编码器和文本编码器来最大化batch中的N个真实对的余弦相似度，同时最小化另外$N^2-N$个非正确对的余弦相似度。</p>
+<p>在相似度分数上，本文使用对称交叉熵损失进行优化</p>
+<p><img src="/2022/03/10/learn-tvm-from-nlp/1647225316655.png" alt="1647225316655"></p>
+<p>从头开始训练，没有使用ImageNet的权重或是文本编码器的预训练权重进行初始化。</p>
+<p>不使用表示和对比嵌入空间之间的非线性投影，只使用线性投影将每个编码器的表示映射到多模态嵌入空间。作者没有发现两个版本之间训练效率的差异，并推测非线性投影可能仅在自监督表示学习方法中与当前图像的细节共同适应。</p>
+<p>删除了Zhang et al.(2020)提出的文本转换函数 $t_u$（从文本中统一采样单个句子），因为 CLIP 预训练数据集中的许多（图像，文本）对中文本只是一个句子。</p>
+<p>简化了图像变化函数$t_v$，从resized的图片中随机裁剪正方形是训练阶段唯一使用的数据增强。</p>
+<p>用于控制softmax中logits的范围的温度参数$\tau$，在训练阶段直接优化为log-parameterized乘法标量，以避免将其作为超参数。</p>
+<h3 id="Choosing-and-Scaling-a-Model"><a href="#Choosing-and-Scaling-a-Model" class="headerlink" title="Choosing and Scaling a Model"></a>Choosing and Scaling a Model</h3><p>图像编码器</p>
+<ul>
+<li>ResNet-50<ul>
+<li>使用ResNet-D和抗锯齿 rect-2 模糊池进行了优化</li>
+<li>用注意力池机制替换了全局平均池层，实现形式为单层的多头QKV注意力，查询以图像的全局平均池表示为条件</li>
+</ul>
+</li>
+<li>ViT<ul>
+<li>在Transformer前面的combined patch和 position embeddings添加了一个额外的层归一化</li>
+<li>使用了略有不同的初始化方案</li>
+</ul>
+</li>
+</ul>
+<p>文本编码器</p>
+<ul>
+<li>Transformer，修改细节见Radford et al. (2019) <ul>
+<li>8 个注意力头，参数量63M，12 层，512-wide</li>
+<li>Transformer对文本的小写字节对编码 (BPE) 表示进行操作，词汇大小为 49,152 。</li>
+<li>为了计算效率，最大序列长度为76</li>
+<li>文本序列用 [SOS] 和 [EOS] 标记括起来，并且在 [EOS] 标记处转换器的最高层的激活被视为文本的特征表示，经过层归一化，然后线性投影到多-模态嵌入空间</li>
+<li>Masked self-attention 在文本编码器中使用，以保留使用预训练语言模型进行初始化或添加语言建模作为辅助目标的能力（这一步需要在未来工作进一步探索）</li>
+</ul>
+</li>
+</ul>
+<p>模型的缩放</p>
+<ul>
+<li>图像编码器<ul>
+<li>平均分配额外的计算以增加模型的宽度、深度和分辨率</li>
+</ul>
+</li>
+<li>文本编码器<ul>
+<li>只缩放模型的宽度，使其与计算的 ResNet 宽度增加成正比</li>
+<li>不缩放深度，CLIP 的性能对文本编码器的容量不太敏感</li>
+</ul>
+</li>
+</ul>
+<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>图像编码器（训练了32个epochs）</p>
+<ul>
+<li>ResNet-50</li>
+<li>ResNet-101</li>
+<li>RN50x4、RN50x16 和 RN50x64这三个EfficientNet-style model，分别使用 ResNet-50 的大约 4 倍、16 倍和 64 倍的计算。</li>
+<li>ViT-B/32</li>
+<li>ViT-B/16</li>
+<li>ViT-L/14</li>
+</ul>
+<p>优化器：Adam，在所有非增益或偏差的权重使用解耦权重衰减正则化，使用余弦调度调整学习率</p>
+<p>在训练 1 个 epoch 时，使用网格搜索、随机搜索和手动调整基线 ResNet50 模型的组合来设置初始超参数。</p>
+<p>可学习参数$\tau$初始化为0.07，并进行裁剪以防止将 logits 缩放超过 100</p>
+<p>一个非常大的minibatch size 32768，使用混合精度来加速训练、节省内存。</p>
+<p>为了节省额外的内存，梯度检测点使用了半精度 Adam 统计（Dhariwal 等人，2020）和半精度随机舍入文本编码器权重。</p>
+<h2 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h2><p>在CV领域，零样本学习是指在图像分类中泛化到看不见的对象类别的研究</p>
+<p>本文将零样本学习视为对看不见的数据集的泛化（这个看不见的数据集里面有没有未知的类别？）</p>
+<p>现有无监督学习领域的研究主要关注机器学习系统的表示学习能力，本文鼓励将零样本迁移作为衡量机器学习任务学习能力的一种方式。</p>
+<p>从这样的角度看，数据集评估了特定分布上任务的性能。但当前学界创建许多流行的CV数据集，主要是作为基准来指导通用图像分类方法的开发，而不是衡量特定任务的性能。</p>
+<p>在这些类型的数据集上，零样本迁移更多的是对 CLIP 对分布转移和域泛化的鲁棒性的评估，而不是任务泛化。</p>
+<p>Visual N-grams：</p>
+<ul>
+<li>首先将每个数据集的类名转换为其n-gram表示</li>
+<li>根据模型计算其概率，将对应的类别预测为最高的得分</li>
+</ul>
+<p>本文</p>
+<ul>
+<li>对每个数据集，使用数据集中所有类的名称作为潜在文本对的集合</li>
+<li>根据CLIP预测最可能的（图像，文本）对</li>
+</ul>
+<p>具体做法</p>
+<ul>
+<li>根据不同的编码器计算图像的特征嵌入和文本集的特征嵌入</li>
+<li>计算嵌入的余弦相似度，通过温度参数$\tau$进行缩放，通过softmax归一化为概率分布</li>
+<li>预测层是一个多项式逻辑回归分类器（具有L2归一化输入、L2归一化权重、无偏差和温度缩放）</li>
+</ul>
+<p>图像编码器是计算图像特征表示的计算机视觉主干，而文本编码器是一个超网络 (Ha et al.,  2016)，它根据指定文本的文本生成线性分类器的权重类所代表的视觉概念。</p>
+<p>CLIP 的零样本分类器是通过自然语言生成的，它允许直接指定的视觉概念。相比之下，常规的监督学习必须从训练样本中间接推断出概念。</p>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>NLP预训练模型的成功在CV领域同样适用。CLIP模型在预训练阶段执行各种各样的预训练任务，以优化训练目标。然后可以通过自然语言提示利用此任务学习，以实现对许多现有数据集的零样本迁移。在规模足够大时，这种方法的性能与特定任务的监督学习相比具有竞争力，且仍有很大的改进空间。</p>
+<p>存在的问题</p>
+<ul>
+<li>CLIP的任务学习和迁移能力仍待提升</li>
+<li>需要提高计算效率，计算开销过大，性能未饱和</li>
+<li>在细粒度分类上的性能较差</li>
+<li>对解决深度学习模型泛化脆弱的潜在问题几乎没有作用，需要在庞大而多样的数据集上进行训练，使所有数据都能有效地分布</li>
+</ul>
+]]></content>
+      <categories>
+        <category>深度学习</category>
+      </categories>
+      <tags>
+        <tag>深度学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>一行Python指令实现文件共享</title>
+    <url>/2022/05/09/pyshare/</url>
+    <content><![CDATA[<h2 id="一行Python指令实现文件共享"><a href="#一行Python指令实现文件共享" class="headerlink" title="一行Python指令实现文件共享"></a>一行Python指令实现文件共享</h2><p>首先在终端切换到需要共享的文件目录</p>
+<p><img src="/2022/05/09/pyshare/1652073769778.png" alt="1652073769778"></p>
+<h3 id="输入指令"><a href="#输入指令" class="headerlink" title="输入指令"></a>输入指令</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">python <span class="token operator">-</span>m http<span class="token punctuation">.</span>server <span class="token number">31142</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p> 把电脑的文件通过 http 协议共享出去，<code>31142</code>是端口，这里可以任意指定没有被占用的端口。 </p>
+<p> 出现如下界面，即为共享成功。</p>
+<p><img src="/2022/05/09/pyshare/1652073798053.png" alt="1652073951054"></p>
+<h3 id="访问文件"><a href="#访问文件" class="headerlink" title="访问文件"></a>访问文件</h3><p>对于本机，在浏览器访问网址</p>
+<pre class="line-numbers language-none"><code class="language-none">http://localhost:31142<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p>界面如下，可以看到文件夹下的目录</p>
+<p><img src="/2022/05/09/pyshare/1652073951054.png" alt="1652073951054"></p>
+<p>也可以找到本机的 ip地址，将 <code>localhost</code> 替换成 ip地址即可访问。这一方法对于连接上同一网络的局域网内其他机器来说也同样适用：</p>
+<pre class="line-numbers language-none"><code class="language-none">http://172.xx.xxx.xxx:31142<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+
+<p><img src="/2022/05/09/pyshare/1652074234803.png" alt="1652074234803"></p>
+]]></content>
+      <categories>
+        <category>杂七杂八</category>
+      </categories>
+      <tags>
+        <tag>杂七杂八</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>打造你自己的集群</title>
     <url>/2022/03/01/build-small-cluster/</url>
     <content><![CDATA[<p>SYSU-SCC的选拔赛搭建系统题，因为升学计划改变，没有接着做优化题，最后也没有加入超算队，但从这些题目中学习了很多知识。记录一下这些非常好的集群入门题。</p>
@@ -1650,114 +1795,221 @@ sudo /sbin/chkconfig --add grafana-server<span aria-hidden="true" class="line-nu
       </tags>
   </entry>
   <entry>
-    <title>Learning Transferable Visual Models From Natural Language Supervision</title>
-    <url>/2022/03/10/learn-tvm-from-nlp/</url>
-    <content><![CDATA[<p>SOTA训练系统以预测一组固定的预定对象类别，这限制了CV系统的通用性，对于任何其他视觉概念，需要额外的标记数据来进行指定。</p>
-<p>从有关图像的原始文本中进行学习能够利用更加广泛的监督来源。本文证明了预测哪个标题与哪个图像搭配的简单预训练任务是一种有效且可扩展的方式，可以在从互联网收集的 4 亿（图像，文本）对的数据集上从头开始学习 SOTA  图像表示。</p>
-<p>在预训练之后，使用自然语言来文本表示学习的视觉概念（或描述新的概念），使模型能够零样本转移（zero-shot transfer）到下游任务。在大多数任务上，与完全监督学习的baseline相比具有竞争力，且无需任何特定的数据集。</p>
-<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>现有工作缺乏动态输出机制，削弱了灵活性，限制了零样本迁移能力</p>
-<p>对比语言图像预训练</p>
-<p>CLIP与GPT相似，优于最好的Imagenet模型，且计算效率更高</p>
-<h2 id="Approach"><a href="#Approach" class="headerlink" title="Approach"></a>Approach</h2><p><img src="/2022/03/10/learn-tvm-from-nlp/1647189274363.png" alt="1647189274363"></p>
-<p>方法的核心是从自然语言的监督中学习感知。</p>
-<p>从自然语言中学习的优势</p>
+    <title>线段树模板及常见应用</title>
+    <url>/2022/03/06/test/</url>
+    <content><![CDATA[<h2 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h2><h3 id="区间修改，区间查询"><a href="#区间修改，区间查询" class="headerlink" title="区间修改，区间查询"></a>区间修改，区间查询</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;bits/stdc++.h&gt;
+#define ll(x) (x &lt;&lt; 1)
+#define rr(x) (x &lt;&lt; 1 | 1)
+using namespace std;
+const int N = 400000 + 5;
+typedef long long lol;
+
+lol n, m;
+lol w[N];
+
+struct seg_tree {
+    lol sum, l, r, lazy;
+} t[N];
+
+lol gi() {
+    lol ans = 0, f = 1;
+    char i = getchar();
+    while (i &lt; '0' || i &gt; '9') {
+        if (i == '-') f = -1;
+        i = getchar();
+    }
+    while (i &gt;= '0' &amp;&amp; i &lt;= '9') {
+        ans = ans * 10 + i - '0';
+        i = getchar();
+    }
+    return ans * f;
+}
+
+void up(lol root) {
+    t[root].sum = t[ll(root)].sum + t[rr(root)].sum;
+}
+
+void build(lol root, lol l, lol r) {
+    int mid = l + r &gt;&gt; 1;
+    t[root].l = l, t[root].r = r;
+    if (l == r) {
+        t[root].sum = w[l];
+        return;
+    }
+    build(ll(root), l, mid);
+    build(rr(root), mid + 1, r);
+    up(root);
+}
+
+void pushdown(lol root) {
+    lol mid = t[root].l + t[root].r &gt;&gt; 1;
+    t[ll(root)].lazy += t[root].lazy;
+    t[rr(root)].lazy += t[root].lazy;
+    t[ll(root)].sum += t[root].lazy * (mid - t[root].l + 1);
+    t[rr(root)].sum += t[root].lazy * (t[root].r - mid);
+    t[root].lazy = 0;
+}
+
+
+
+void updata(lol root, lol l, lol r, lol val) {
+    lol mid = t[root].l + t[root].r &gt;&gt; 1;
+    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) {
+        t[root].sum += val * (t[root].r - t[root].l + 1);
+        t[root].lazy += val;
+        return;
+    }
+    if (t[root].lazy) pushdown(root);
+    if (l &lt;= mid) updata(ll(root), l, r, val);
+    if (mid &lt; r) updata(rr(root), l, r, val);
+    up(root);
+}
+
+lol query(lol root, lol l, lol r) {
+    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) return t[root].sum;
+    if (r &lt; t[root].l || t[root].r &lt; l) return 0;
+    if (t[root].lazy) pushdown(root);
+    return query(ll(root), l, r) + query(rr(root), l, r);
+}
+
+int main() {
+    lol f, x, y, val;
+    n = gi();
+    m = gi();
+    for (lol i = 1; i &lt;= n; i++)
+        w[i] = gi();
+    build(1, 1, n);
+    for (lol i = 1; i &lt;= m; i++) {
+        f = gi();
+        x = gi();
+        y = gi();
+        if (f == 1)
+            val = gi(), updata(1, x, y, val);
+        else
+            printf("%lld\n", query(1, x, y));
+    }
+    return 0;
+}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Vision Transformer</title>
+    <url>/2022/03/02/vit/</url>
+    <content><![CDATA[<h2 id="已有研究"><a href="#已有研究" class="headerlink" title="已有研究"></a>已有研究</h2><p>Transformer在NLP上的成功</p>
+<p>Attention机制在CV领域的应用，能够完全替代卷积且在理论上验证有效。</p>
+<p>缺陷：</p>
 <ul>
-<li>因为不需要采用经典的机器学习兼容格式（从N个选出1个），相较于用于图像分类的标准crowd-sourced labelling更加容易拓展</li>
-<li>不仅是学习一种表示，还能将表示与语言联系起来，实现灵活的零样本迁移</li>
+<li>由于使用了专门的注意力机制，但未在现代硬件加速器上有效拓展，计算效率低</li>
+<li>在大规模数据集上，Resnet-like的架构依然是SOTA</li>
 </ul>
-<h3 id="Pre-Training-Method"><a href="#Pre-Training-Method" class="headerlink" title="Pre-Training Method"></a>Pre-Training Method</h3><p>训练效率是最重要的，本文根据这一指标选择预训练方法</p>
-<p>仅预测整个文本与哪个图像配对，而不是该文本的确切单词</p>
-<p><img src="/2022/03/10/learn-tvm-from-nlp/1647224538268.png" alt="1647224538268"></p>
-<p>橙线和蓝线表示的方法试图预测每张图像所附文本的确切单词。这是一项艰巨的任务，因为与图像同时出现的描述、评论和相关文本种类繁多。可以看到本文提出的方法在效率上有很大的提升。</p>
-<p>对于给定的N个（图像，文本）对，CLIP用于预测NxN个对中哪个是实际发生的。</p>
-<p>CLIP学习得到一个多模态嵌入空间，通过图片编码器和文本编码器来最大化batch中的N个真实对的余弦相似度，同时最小化另外$N^2-N$个非正确对的余弦相似度。</p>
-<p>在相似度分数上，本文使用对称交叉熵损失进行优化</p>
-<p><img src="/2022/03/10/learn-tvm-from-nlp/1647225316655.png" alt="1647225316655"></p>
-<p>从头开始训练，没有使用ImageNet的权重或是文本编码器的预训练权重进行初始化。</p>
-<p>不使用表示和对比嵌入空间之间的非线性投影，只使用线性投影将每个编码器的表示映射到多模态嵌入空间。作者没有发现两个版本之间训练效率的差异，并推测非线性投影可能仅在自监督表示学习方法中与当前图像的细节共同适应。</p>
-<p>删除了Zhang et al.(2020)提出的文本转换函数 $t_u$（从文本中统一采样单个句子），因为 CLIP 预训练数据集中的许多（图像，文本）对中文本只是一个句子。</p>
-<p>简化了图像变化函数$t_v$，从resized的图片中随机裁剪正方形是训练阶段唯一使用的数据增强。</p>
-<p>用于控制softmax中logits的范围的温度参数$\tau$，在训练阶段直接优化为log-parameterized乘法标量，以避免将其作为超参数。</p>
-<h3 id="Choosing-and-Scaling-a-Model"><a href="#Choosing-and-Scaling-a-Model" class="headerlink" title="Choosing and Scaling a Model"></a>Choosing and Scaling a Model</h3><p>图像编码器</p>
+<p>作者的工作：尽可能少的修改标准的Transformer，将其应用于图像领域。</p>
+<h2 id="自注意力机制的应用"><a href="#自注意力机制的应用" class="headerlink" title="自注意力机制的应用"></a>自注意力机制的应用</h2><p>核心思想：以每个像素作为序列中的元素会导致很高的计算复杂度，因此通过一些方法缩短序列的长度。</p>
 <ul>
-<li>ResNet-50<ul>
-<li>使用ResNet-D和抗锯齿 rect-2 模糊池进行了优化</li>
-<li>用注意力池机制替换了全局平均池层，实现形式为单层的多头QKV注意力，查询以图像的全局平均池表示为条件</li>
+<li>Parmar et al. (2018）：仅在每个查询像素的局部邻域中应用自注意力机制，而非全局应用。stand alone attention</li>
+<li>Hu et al., 2019; Ramachandran et al., 2019; Zhao et al., 2020：使用上述方法，完全替代了卷积。</li>
+<li>Sparse Transformers (Child et al., 2019) ：应用了全局注意力的可拓展近似（scalable approximation）</li>
+<li>Weissenborn et al., 2019：将自注意力机制用于大小不同的块中，以扩展（scale）注意力。</li>
+<li>Hoet al., 2019; Wang et al., 2020a：尝试了一种极端情况，只沿单个轴。轴注意力axial attention，先在横轴上做注意力，再在纵轴上做注意力。</li>
 </ul>
-</li>
-<li>ViT<ul>
-<li>在Transformer前面的combined patch和 position embeddings添加了一个额外的层归一化</li>
-<li>使用了略有不同的初始化方案</li>
-</ul>
-</li>
-</ul>
-<p>文本编码器</p>
+<p>上述方法的缺陷：需要复杂的工程才能高效应用于硬件加速器。</p>
+<p>相似研究：</p>
 <ul>
-<li>Transformer，修改细节见Radford et al. (2019) <ul>
-<li>8 个注意力头，参数量63M，12 层，512-wide</li>
-<li>Transformer对文本的小写字节对编码 (BPE) 表示进行操作，词汇大小为 49,152 。</li>
-<li>为了计算效率，最大序列长度为76</li>
-<li>文本序列用 [SOS] 和 [EOS] 标记括起来，并且在 [EOS] 标记处转换器的最高层的激活被视为文本的特征表示，经过层归一化，然后线性投影到多-模态嵌入空间</li>
-<li>Masked self-attention 在文本编码器中使用，以保留使用预训练语言模型进行初始化或添加语言建模作为辅助目标的能力（这一步需要在未来工作进一步探索）</li>
+<li>Cordonnier et al. (2020)：将输入图像分割成多个大小为2x2的块，在顶部（top）应用完整的自注意力机制。</li>
+<li>缺陷：仅适用于小分辨率图像，且效果不如SOTA的CNN。</li>
 </ul>
-</li>
-</ul>
-<p>模型的缩放</p>
+<h3 id="其他研究（TODO）"><a href="#其他研究（TODO）" class="headerlink" title="其他研究（TODO）"></a>其他研究（TODO）</h3><p>结合self-attention的CNN</p>
+<p>image GPT（iGPT）</p>
+<p>使用额外数据集以取得SOTA结果</p>
+<p>当数据集大小变化时，CNN的性能变化</p>
+<p>CNN在大规模数据集上进行迁移学习的研究</p>
+<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/2022/03/02/vit/1646548420444.png" alt="1646548420444"></p>
+<p>首先将图像分为多个固定大小的patches，通过线性映射层（linear embedding）获得输入。由于图片块本身是有相对位置的，而transformer中不考虑位置信息，因此加入position embedding，然后将生成的向量序列送到标准的Transformer编码器中。为了实现分类，向序列中添加额外的可学习的”classification token”（模仿BERT），CLS token。</p>
+<h2 id="输入的转换"><a href="#输入的转换" class="headerlink" title="输入的转换"></a>输入的转换</h2><p>将图像拆分成块，通过线性Embedding对这些patch进行转换，作为Transformer的输入。</p>
+<p>Image patch相当于NLP中的tokens（words），即题目所表达的，一张图片相当于很多个16x16的单词。</p>
+<p>效果：在Imagenet-1k这样的较小的数据集上比Resnet要低几个百分点，但是在大数据集上达到了SOTA。</p>
+<p>原因：Transformer缺少CNN固有的inductive biaes，如平移等变性（translation equivariance）和局部性，因此在数据量不足的时候并不能很好的泛化。</p>
+<p>改进方法：在大规模数据集（14M-300M images）上进行训练。</p>
+<p>ViT存在的缺陷：需要大数据集上进行训练才能够取得优秀的效果。</p>
+<p>输入维度的转换：</p>
+<p>$(H,W,C)\rightarrow(N,P^2*C)$，其中（H，W）是图像的分辨率，C是channels的数目。（P，P）是image patch的分辨率，$N=HW/P^2$是patch的数量，作为Transformer的有效输入长度。</p>
+<p>Transformer在所有层中使用恒定的潜在向量大小D，作者将patch展平，并通过可训练的线性投射层将其映射到D维。</p>
+<h2 id="Position-Embedding"><a href="#Position-Embedding" class="headerlink" title="Position Embedding"></a>Position Embedding</h2><p>并非直接传具体的数字1,2,3,….而是有一个表，表的每一行代表了序号，每一行是一个向量，维度是768（$16<em>16</em>3$），这个表通过学习得到。然后将这个向量信息加到前面生成的向量里面（197x768：其中196是patch的个数，注：224x224的图片，16x16的patch size。然后还有个cls token（197x1）），这里的加并非concatenation，是直接sum。</p>
+<p>使用标准的1D可学习的Position embedding，没有用2D的是因为没有显著提升。</p>
+<p>从附录中的figure 10也可以看到，Position Embedding是能够通过学习得到相对位置信息的，且能够学习到2D的邻域相似性。这也验证了上面的结论。</p>
+<img src="1646569234586.png" alt="1646569234586" style="zoom:67%;">
+
+<h2 id="归纳偏置"><a href="#归纳偏置" class="headerlink" title="归纳偏置"></a>归纳偏置</h2><p>归纳偏置：一种先验知识（提前做好的假设）</p>
 <ul>
-<li>图像编码器<ul>
-<li>平均分配额外的计算以增加模型的宽度、深度和分辨率</li>
+<li>locality：卷积神经网络以滑动窗口的形式，一点一点在图片上进行卷积，因此假设在图片上相邻的区域会有相邻的特征。</li>
+<li>平移等变形translation equivariance：$f(g(x))=g(f(x))$，无论先做f函数还是g函数，结果是不变的。其中f可以理解为卷积操作，g可以理解为平移操作。</li>
 </ul>
-</li>
-<li>文本编码器<ul>
-<li>只缩放模型的宽度，使其与计算的 ResNet 宽度增加成正比</li>
-<li>不缩放深度，CLIP 的性能对文本编码器的容量不太敏感</li>
-</ul>
-</li>
-</ul>
-<h3 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h3><p>图像编码器（训练了32个epochs）</p>
+<p>相较于CNN，ViT的image-specific归纳偏差要少得多。</p>
+<p>在CNN中，整个模型的每一层有局部性，平移等效性，二维邻域结构。</p>
+<p>在ViT中，只有MLP具有平移等效性和局部性，自注意力是全局的。</p>
+<p>二维邻域结构的时候非常谨慎：在模型开始时，通过将图像切割成块并在fine-tuning time来调整针对不同分辨率图像的Position Embedding。除此之外，初始化时的position embedding不携带有关patch的2D位置信息，必须从头学习patch之间的所有空间关系。</p>
+<h2 id="混合模型"><a href="#混合模型" class="headerlink" title="混合模型"></a>混合模型</h2><p>输入序列由CNN的特征图组成，而非原始的图像块。</p>
+<p>然后通过patch embedding projection对从CNN特征图中提取得到的序列进行处理。</p>
+<p>在特殊情况下，patch的空间大小可以为1x1，这意味着输入序列是通过简单地将特征图的空间维度展平并投影到Transformer的维度上获得的。</p>
+<h2 id="微调以及更高的分辨率"><a href="#微调以及更高的分辨率" class="headerlink" title="微调以及更高的分辨率"></a>微调以及更高的分辨率</h2><p>将预训练的ViT模型的预测头移除，加入一个零初始化的DxK的前馈层，其中K是下游任务中类别的数量。</p>
+<p>对于更高的分辨率，保持patch size不变，这样会产生更大的有效序列长度。</p>
+<p>ViT可以在内存限制范围内处理任意长度的序列，但预训练的position embedding可能就不再适用了。</p>
+<p>因此作者根据它们在原始图像中的位置，对预训练的position embedding进行2D插值。这种分辨率上的调整和patch extraction是将有关图像2D结构的归纳偏置注入到ViT的唯一的点。</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>预训练</p>
 <ul>
-<li>ResNet-50</li>
-<li>ResNet-101</li>
-<li>RN50x4、RN50x16 和 RN50x64这三个EfficientNet-style model，分别使用 ResNet-50 的大约 4 倍、16 倍和 64 倍的计算。</li>
-<li>ViT-B/32</li>
-<li>ViT-B/16</li>
-<li>ViT-L/14</li>
+<li>ILSVRC-2012（1.3M images、1k classes）文中称之为Imagenet。</li>
+<li>ImageNet-21k （14M images、21k classes）</li>
+<li>JFT（303M 高分辨率images、18k classes）</li>
 </ul>
-<p>优化器：Adam，在所有非增益或偏差的权重使用解耦权重衰减正则化，使用余弦调度调整学习率</p>
-<p>在训练 1 个 epoch 时，使用网格搜索、随机搜索和手动调整基线 ResNet50 模型的组合来设置初始超参数。</p>
-<p>可学习参数$\tau$初始化为0.07，并进行裁剪以防止将 logits 缩放超过 100</p>
-<p>一个非常大的minibatch size 32768，使用混合精度来加速训练、节省内存。</p>
-<p>为了节省额外的内存，梯度检测点使用了半精度 Adam 统计（Dhariwal 等人，2020）和半精度随机舍入文本编码器权重。</p>
-<h2 id="Experiment"><a href="#Experiment" class="headerlink" title="Experiment"></a>Experiment</h2><p>在CV领域，零样本学习是指在图像分类中泛化到看不见的对象类别的研究</p>
-<p>本文将零样本学习视为对看不见的数据集的泛化（这个看不见的数据集里面有没有未知的类别？）</p>
-<p>现有无监督学习领域的研究主要关注机器学习系统的表示学习能力，本文鼓励将零样本迁移作为衡量机器学习任务学习能力的一种方式。</p>
-<p>从这样的角度看，数据集评估了特定分布上任务的性能。但当前学界创建许多流行的CV数据集，主要是作为基准来指导通用图像分类方法的开发，而不是衡量特定任务的性能。</p>
-<p>在这些类型的数据集上，零样本迁移更多的是对 CLIP 对分布转移和域泛化的鲁棒性的评估，而不是任务泛化。</p>
-<p>Visual N-grams：</p>
+<p>下游任务</p>
 <ul>
-<li>首先将每个数据集的类名转换为其n-gram表示</li>
-<li>根据模型计算其概率，将对应的类别预测为最高的得分</li>
+<li>ImageNet on the original validation labels and the cleaned-up<br>ReaL labels </li>
+<li>CIFAR-10/100 </li>
+<li>Oxford-IIIT Pets</li>
+<li>Oxford Flowers-102</li>
+<li>19-task VTAB classification suite</li>
 </ul>
-<p>本文</p>
+<p>预处理方法见（ Kolesnikov et al. (2020））</p>
+<h3 id="模型变体"><a href="#模型变体" class="headerlink" title="模型变体"></a>模型变体</h3><img src="1646554416365.png" alt="1646554416365" style="zoom:67%;">
+
+<p>ViT-L/16 means the“Large” variant with 16 × 16 input patch size.</p>
+<p>Transformer的序列长度与块大小的平方成反比，因此块大小较小的模型计算成本更高。</p>
+<h3 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h3><p>Resnet，但是batch normalization换成了group normalization，并采用了标准化的卷积。</p>
+<p>对于混合体，将中间特征图输入到ViT中，patch大小为一个像素。</p>
+<h3 id="训练参数-TODO"><a href="#训练参数-TODO" class="headerlink" title="训练参数(TODO)"></a>训练参数(TODO)</h3><h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><p>通过linear few-shot或者fine-tuning accuracy来进行评价。</p>
+<p>fine-tuning accuracy在模型微调后进行评估。</p>
+<p>linear few-shot是通过解决正则化最小二乘回归问题得到的，该问题将训练图像子集的（冻结）表示映射到${-1,1}^k$目标向量。即不去finetune，直接拿来做特征提取器，做一个regression。</p>
+<p>在评价中主要用fine-tuning accuracy，在微调成本过高时使用few-shot进行快速动态评估。</p>
+<h3 id="与SOTA模型的比较"><a href="#与SOTA模型的比较" class="headerlink" title="与SOTA模型的比较"></a>与SOTA模型的比较</h3><p>在性能指标有微小的提升，但是预训练使用的资源大大减少。</p>
+<p>对于数据集大小较为敏感，需要大量数据集进行训练。在Imagenet上不如Resnet，但是在更大的数据集上超国了Resnet。</p>
+<p>在迁移学习的准确率上，ViT的效果要好过Resnet。在预训练计算量较小时，hybrid能够改进纯transformer。但随着模型的增大，这种差异消失了。这一现象是惊人的，因为人们在直觉上会觉得，卷积局部特征处理能够帮助任何大小的ViT。此外，ViT在作者尝试过的预训练计算量范围内并没有达到性能饱和，因此可以做进一步的拓展，有进一步提升的空间。</p>
+<p>作者的结论：卷积归纳偏差对较小的数据集很有用，但对于较大的数据集，直接从数据中学习相关模式就足够了，甚至是beneficial的。</p>
+<h3 id="自监督训练"><a href="#自监督训练" class="headerlink" title="自监督训练"></a>自监督训练</h3><p>采用自监督方法（masked patch prediction，模仿BERT），使用ViT-B/16在Imagenet上实现了79.9%的准确率，比从头开始训练高了2%，但是依然比有监督训练低了4%。</p>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>与先前的使用自注意力机制的CV工作不同（采用image-specific的归纳偏置、ViT仅在对初始patch进行提取的时候使用了），ViT将图像表达为一系列的patch，并使用NLP中的Transformer对序列进行处理。这在大规模的数据集上取得了SOTA的效果，同时能够保持一个相对低的预训练代价。</p>
+<p><strong>Further Work</strong></p>
 <ul>
-<li>对每个数据集，使用数据集中所有类的名称作为潜在文本对的集合</li>
-<li>根据CLIP预测最可能的（图像，文本）对</li>
+<li>将ViT应用于检测和分割任务</li>
+<li>进行基于自监督学习的预训练方法的探索</li>
 </ul>
-<p>具体做法</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>优点</p>
 <ul>
-<li>根据不同的编码器计算图像的特征嵌入和文本集的特征嵌入</li>
-<li>计算嵌入的余弦相似度，通过温度参数$\tau$进行缩放，通过softmax归一化为概率分布</li>
-<li>预测层是一个多项式逻辑回归分类器（具有L2归一化输入、L2归一化权重、无偏差和温度缩放）</li>
+<li>使用相对少的计算资源</li>
+<li>在大数据集上取得了SOTA</li>
+<li>可以通过预训练进一步提升性能，在已观测范围内未达到性能饱和</li>
 </ul>
-<p>图像编码器是计算图像特征表示的计算机视觉主干，而文本编码器是一个超网络 (Ha et al.,  2016)，它根据指定文本的文本生成线性分类器的权重类所代表的视觉概念。</p>
-<p>CLIP 的零样本分类器是通过自然语言生成的，它允许直接指定的视觉概念。相比之下，常规的监督学习必须从训练样本中间接推断出概念。</p>
-<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>NLP预训练模型的成功在CV领域同样适用。CLIP模型在预训练阶段执行各种各样的预训练任务，以优化训练目标。然后可以通过自然语言提示利用此任务学习，以实现对许多现有数据集的零样本迁移。在规模足够大时，这种方法的性能与特定任务的监督学习相比具有竞争力，且仍有很大的改进空间。</p>
-<p>存在的问题</p>
+<p>缺点</p>
 <ul>
-<li>CLIP的任务学习和迁移能力仍待提升</li>
-<li>需要提高计算效率，计算开销过大，性能未饱和</li>
-<li>在细粒度分类上的性能较差</li>
-<li>对解决深度学习模型泛化脆弱的潜在问题几乎没有作用，需要在庞大而多样的数据集上进行训练，使所有数据都能有效地分布</li>
+<li>在中小数据集上效果不佳（可以考虑采用混合模型，加入CNN的归纳偏置以提升效果）</li>
+<li>在图片分辨率变化较大的时候，仅仅通过简单的2D插值难以保持Position Embedding的有效性</li>
+</ul>
+<p>进一步的工作</p>
+<ul>
+<li>论文仅在分类任务上做了验证，还可以尝试用于检测和分割任务</li>
+<li>改进自监督学习的方法</li>
 </ul>
 ]]></content>
       <categories>
@@ -1768,30 +2020,114 @@ sudo /sbin/chkconfig --add grafana-server<span aria-hidden="true" class="line-nu
       </tags>
   </entry>
   <entry>
-    <title>一行Python指令实现文件共享</title>
-    <url>/2022/05/09/pyshare/</url>
-    <content><![CDATA[<h2 id="一行Python指令实现文件共享"><a href="#一行Python指令实现文件共享" class="headerlink" title="一行Python指令实现文件共享"></a>一行Python指令实现文件共享</h2><p>首先在终端切换到需要共享的文件目录</p>
-<p><img src="/2022/05/09/pyshare/1652073769778.png" alt="1652073769778"></p>
-<h3 id="输入指令"><a href="#输入指令" class="headerlink" title="输入指令"></a>输入指令</h3><pre class="line-numbers language-python" data-language="python"><code class="language-python">python <span class="token operator">-</span>m http<span class="token punctuation">.</span>server <span class="token number">31142</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+    <title>Transformer</title>
+    <url>/2022/02/27/transformer/</url>
+    <content><![CDATA[<h2 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h2><h3 id="Memory-Based"><a href="#Memory-Based" class="headerlink" title="Memory-Based"></a>Memory-Based</h3><p>QKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是 question，v 是 answer，q 是新来的 question，看看历史 memory 中 q 和哪个 k 更相似，根据相似度决定权重，使用k 对应的 v，合成当前 question 的 answer。</p>
+<p>注意力函数是对一个query向量，让它和一系列的key向量-value向量对进行映射并输出结果的函数，输出是value的加权和，权重是key和query的相似度计算来的；即使key-value对不改变，随着query的改变，输出向量会不一样,但输出的维度是和value一样的。</p>
+<p>从本质上理解，Attention是从大量信息中有选择地筛选出少量重要信息并聚焦到这些重要信息上，忽略大多不重要的信息。聚焦的过程体现在权重系数的计算上，权重越大越聚焦于其对应的Value值上，即权重代表了信息的重要性，而Value是其对应的信息。</p>
+<img src="1645790269336.png" alt="1645790269336" style="zoom: 50%;">
 
-<p> 把电脑的文件通过 http 协议共享出去，<code>31142</code>是端口，这里可以任意指定没有被占用的端口。 </p>
-<p> 出现如下界面，即为共享成功。</p>
-<p><img src="/2022/05/09/pyshare/1652073798053.png" alt="1652073951054"></p>
-<h3 id="访问文件"><a href="#访问文件" class="headerlink" title="访问文件"></a>访问文件</h3><p>对于本机，在浏览器访问网址</p>
-<pre class="line-numbers language-none"><code class="language-none">http://localhost:31142<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>工作流程：</p>
+<p>attention函数共有三步完成得到attention value。</p>
+<ul>
+<li>Q与K进行相似度计算得到权值</li>
+<li>对上部权值归一化</li>
+<li>用归一化的权值与V加权求和</li>
+</ul>
+<p> 将Source中的构成元素想象成是由一系列的(Key,Value)数据对构成，此时给定Target中的某个元素Query，通过计算Query和各个Key的相似性或者相关性，得到每个Key对应Value的权重系数，然后对Value进行加权求和，即得到了最终的Attention数值。所以本质上Attention机制是对Source中元素的Value值进行加权求和，而Query和Key用来计算对应Value的权重系数。即可以将其本质思想改写为如下公式： </p>
+<p>$$<br>\text { Attention }\left(\text { Query }<em>{j}, \text { Source }\right)=\sum</em>{i=1}^{N} \text { Similarity }\left(\text { Query }<em>{j}, \text { Key }</em>{i}\right) * \text { Value }_{i}<br>$$</p>
+<p>在自然语言任务中，往往K和V是相同的。这时计算出的attention value是一个向量，代表序列元素$xj$的编码向量。此向量中包含了元素$xj$的上下文关系，即包含全局联系也拥有局部联系。全局联系是因为在求相似度的时候，序列中元素与其他所有元素的相似度计算，然后加权得到了编码向量。局部联系可以这么解释，因为它所计算出的attention value是属于当前输入的$x_j$的。这也就是attention的强大优势之一，它可以灵活的捕捉长期和local依赖，而且是一步到位的。</p>
+<img src="1645791150589.png" alt="1645791150589" style="zoom: 50%;">
 
-<p>界面如下，可以看到文件夹下的目录</p>
-<p><img src="/2022/05/09/pyshare/1652073951054.png" alt="1652073951054"></p>
-<p>也可以找到本机的 ip地址，将 <code>localhost</code> 替换成 ip地址即可访问。这一方法对于连接上同一网络的局域网内其他机器来说也同样适用：</p>
-<pre class="line-numbers language-none"><code class="language-none">http://172.xx.xxx.xxx:31142<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="Transformer中的使用"><a href="#Transformer中的使用" class="headerlink" title="Transformer中的使用"></a>Transformer中的使用</h3><ul>
+<li><p>对依赖项进行建模，无需考虑它们在输入/输出序列中的距离。</p>
+</li>
+<li><p>完全抛弃了卷积和递归，只使用注意力机制来构建输入和输出之间的全局依赖关系。</p>
+</li>
+<li><p>由于传统的卷积神经网络中，关联来自于任意两个输入/输出位置的信号所需的操作随着二者的位置之间的距离而增长，这使得网络更加难以学习远距离位置之间的依赖关系。Transformer能够将这样的操作减少到一个恒定的数目（任意两个单位之间的距离相同）。同时，考虑到平均注意力加权降低了有效分辨率的缺陷，Transformer采用了多头注意力机制。</p>
+</li>
+<li><p>Self-Attention：一种将单个序列的不同位置关联起来以计算序列表示的注意力机制。</p>
+</li>
+</ul>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>能够捕捉全局和局部的联系，从attention函数就可以看出来，它先是进行序列的每一个元素与其他元素的对比，在这个过程中每一个元素间的距离都是一，因此它比时间序列RNNs的一步步递推得到长期依赖关系好的多，越长的序列RNNs捕捉长期依赖关系就越弱。</li>
+<li>提供并行性，能通过并行计算减少模型训练时间</li>
+<li>模型复杂度小，参数少</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>Attention机制不是”distance-aware”的，它不能捕捉语序顺序，而在NLP中语序顺序是很重要的（对此，Transformer采用的处理方式是Position Encoding，在计算机视觉领域是如何解决的？查阅资料发现同样是采用Position Encoding进行解决的。（待读论文：Image Transformer、Vision Transformer）可否通过预训练使得模型具有识别图像序列顺序的能力？）</li>
+</ul>
+<h2 id="Encoder-Decoder"><a href="#Encoder-Decoder" class="headerlink" title="Encoder-Decoder"></a>Encoder-Decoder</h2><h3 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h3><img src="1645587474058.png" alt="1645587474058" style="zoom: 50%;">
 
-<p><img src="/2022/05/09/pyshare/1652074234803.png" alt="1652074234803"></p>
+<p><strong>Example</strong>【 <a href="https://zhuanlan.zhihu.com/p/364659780">Bert前篇：手把手带你详解Transformer原理 - 知乎 (zhihu.com)</a> 】：</p>
+<img src="v2-31a51936a0af60dd63e68c98e3a7ab0f_r.jpg" alt="preview" style="zoom: 50%;">
+
+<h3 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h3><p>由6个相同的层组成，每个层包括两个子层，第一个是多头自注意力机制，第二个是简单的position-wise全连接神经网络。在每个子层周围使用残差连接，然后进行层 normalization。每个sub-层的输出为$LayerNorm(x+Sublayer(x))$。</p>
+<p><strong>Q：position-wise指的是什么？</strong></p>
+<p>解释一：区别于普通的全连接网络，这里FFN的输入是序列中每个位置上的元素，而不是整个序列，所以每个元素完全可以独立计算，最极端节省内存的做法是遍历序列，每次只取一个元素得到FFN的结果，但是这样做时间消耗太大，“分段”的含义就是做下折中，将序列分成子段，也就是多个子序列，每次读取一个子序列进行FFN计算，最后将多份的结果拼接。 </p>
+<p>解释二： 从卷积的角度解释，这里的FFN等价于kernel_size=1的卷积，这样每个position都是独立运算的。如果kernel_size=2，或者其他，position之间就具有依赖性了，不能叫做position-wise了。</p>
+<h3 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h3><p>同样是6个相同的层组成，但是每个层包括三个子层，第三个sub-层用于对Encoder堆栈的输出执行多头注意力机制。残差连接与Encoder相同。修改了注意力层以避免当前位置继续参与（attend）到后面的位置中。</p>
+<p><strong>Mask</strong>：Mask操作是为了避免解码器在训练的时候看到当前时刻看到以后时间的信息。</p>
+<p>对于t时刻的query，应该只看到key(1), key(2),…key(t-1)的数据，因为key(t)在当前时刻还不存在。</p>
+<p>Masked的作用是使对应value的权值为0，对于query(t)和未来时刻的key的内积，赋值为负无穷大（-inf），这样使用softmax计算权值为0，所以计算output的时候只用到了t-1以前时刻的key-value pair的信息。保证了训练时和预测时的情况是一样的。</p>
+<img src="1645862082581.png" alt="1645862082581" style="zoom: 33%;">
+
+<p>mask的具体做法：（ <a href="https://zhuanlan.zhihu.com/p/364659780">Bert前篇：手把手带你详解Transformer原理 - 知乎 (zhihu.com)</a> ）</p>
+<p><img src="/2022/02/27/transformer/1645865219155.png" alt="1645865219155"></p>
+<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><img src="1645778258219.png" alt="1645778258219" style="zoom: 67%;">
+
+<h3 id="Scaled-Dot-Product-Attention"><a href="#Scaled-Dot-Product-Attention" class="headerlink" title="Scaled Dot-Product Attention"></a>Scaled Dot-Product Attention</h3><p>输入由维度为$d_k$的queries和key以及维度为$d_v$的values组成。使用所有keys计算queries的点积，并除以$\sqrt{d_k}$，然后用softmax函数获得与values相乘的权重。公式如下：</p>
+<p>$$<br>\text { Attention }(Q, K, V)=\operatorname{softmax}\left(\frac{Q K^{T}}{\sqrt{d_{k}}}\right) V<br>$$<br><strong>做法含义</strong>： 向量内积是一个向量在另一个向量上的投影长度乘以另一个向量的长度。内积的几何意义是一个向量在另一个向量上的投影，进而内积越大说明相似度越高。</p>
+<p>对于attention中计算两个向量之间的相关度，两个常用函数为Additive attention和dot-product（multiple） attention。点积从公式中可以体现出来，Additive attention是使用一个前馈神经网络（只含一个隐藏层）来计算兼容性函数。</p>
+<p>二者优缺点分析：dot-product attention，可以利用矩阵运算，计算速度更快，并且更节省空间，但是要求 Q 和 K向量维度相同，如果不同需要进行一定的映射变换。在dk较小时二者表现相似，但是dk较大时，dot-product attention表现不如additive attention，因为dk较大时点积之后的结果较大，求softmax之后，梯度会很小，不利于计算，需要做一定的缩放。</p>
+<p>知乎：较长的序列（512）会导致QK的内积的方差很大，相对差距变大，极值做出来softmax会倾向于1， 计算的梯度接近0，导致难以学习，除以sqrt(dk)可以避免这种情况。</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/70905e28d662">Additive Attention 和 Dot-product Attention</a> </li>
+<li><a href="https://zhuanlan.zhihu.com/p/434357918">Transformer论文详解——想不懂都难 - 知乎 (zhihu.com)</a></li>
+</ul>
+<p><strong>作者采用的方案以及性能上的讨论</strong>：由于dot-product可以用高性能的矩阵乘法进行优化，计算速度快，空间上也更优，作者采用了dot-product。当$d_k$较小的时候，两种机制表现相近，Additive在$d_k$值较大的时候，无需对其缩放，因此性能优于dot-product。作者的观点是对于较大的$d_k$，dot-product在规模（magnitude）上会更大，这将softmax函数推入了极小梯度的区域。因此他们在公式中进行了除以$\sqrt{d_k}$这样一个缩放。</p>
+<h3 id="Multi-Head-Attention"><a href="#Multi-Head-Attention" class="headerlink" title="Multi-Head Attention"></a>Multi-Head Attention</h3><p><strong>原理</strong>：与对keys、values、queries使用一个注意力机制不同，作者提出了一种更有效的方法：使用不同的线性投影，将queries、keys、values分别投影到$d_k$、$d_k$、$d_v$维（进行h次），然后在投影之后的queries、keys、values上并行执行attention function，得到维度为$d_v$的输出，然后将他们连接（concat）起来后再次投影产生最终值。	</p>
+<p> <img src="/2022/02/27/transformer/v2-70a3f25fa1b618ecd9811567daca4ec9_r.jpg" alt="img"> </p>
+<p><strong>优点</strong>：允许模型共同关注来自不同位置的不同表示子空间的信息，对于单个注意力头，平均化会抑制这一点。</p>
+<p><img src="/2022/02/27/transformer/1645781140551.png" alt="1645781140551"></p>
+<p><strong>实验参数</strong>：$h=8,d_k=d_v=d_{model}/h=64$</p>
+<p><strong>性能讨论</strong>：由于每个头维度减少，总体计算量与单头注意力机制近似。</p>
+<h3 id="Position-wise-Feed-Forward-Network"><a href="#Position-wise-Feed-Forward-Network" class="headerlink" title="Position-wise Feed-Forward Network"></a>Position-wise Feed-Forward Network</h3><p>除了注意力子层外，编码器与编码器中的每一层都包含一个全连接的前馈神经网络，分别相同应用于每个位置。包含两个线性变化，二者之间有一个ReLU激活函数。<br>$$<br>\operatorname{FFN}(x)=\max \left(0, x W_{1}+b_{1}\right) W_{2}+b_{2}<br>$$<br>transformer抽取序列信息：attention把序列里的信息抓取出来，在每个点做了一次全局的汇聚，里面包含了感兴趣的序列信息，以至于后面经过mlp做投影，把向量映射到更想要的语义空间，因为每个点都包含了序列相关信息，所以对每个点独立做MLP就可以了，这就是transformer如何抽取“序列信息”并加工的方法。</p>
+<p>RNN抽取序列信息：MLP权重W是共用的，时序信息是通过把上一个时刻的输出接到当前时刻，与当前时刻的输入合并，再经过MLP,实现了序列信息的汇聚和提取。</p>
+<p>区别：都是用MLP实现语义空间的转换，不一样的是如何传递“序列信息”。</p>
+<img src="1645863103955.png" alt="1645863103955" style="zoom: 33%;">
+
+<p><strong>实验参数</strong>：</p>
+<ul>
+<li>输入/输出维度$d_{model}=512$</li>
+<li>inner-层维度$d_{ff}=2048$</li>
+</ul>
+<h3 id="Embedding-amp-Softmax"><a href="#Embedding-amp-Softmax" class="headerlink" title="Embedding &amp; Softmax"></a>Embedding &amp; Softmax</h3><p>通过学习好的Embedding将输入/输出token转换为维度为$d_{model}$的向量。在嵌入层中，作者对权重乘以$\sqrt{d_{model}}$</p>
+<p>原因：Embedding的分布往往是$N(1, \frac{1}{\sqrt{d_{model}}})$</p>
+<h3 id="Position-Encoding"><a href="#Position-Encoding" class="headerlink" title="Position Encoding"></a>Position Encoding</h3><p>为了让模型利用序列的顺序，需要在序列中注入关于序列的相对或绝对位置的信息。</p>
+<p><strong>做法</strong>：在解码器/编码器的堆栈底部加入位置编码（Position Encoding）。位置编码与Embedding具有相同的维度$d_{model}$，二者可以直接相加。位置编码可以有多种选择，通过学习得到的（learned）或是固定的（fixed）。Transformer采用绝对位置编码。</p>
+<p>在这里论文中使用了$sin$和$cos$函数的线性变换来提供给模型位置信息:<br>$$<br>\begin{aligned}<br>P E_{(p o s, 2 i)} &amp;=\sin \left(p o s / 10000^{2 i / d_{\text {model }}}\right) \<br>P E_{(p o s, 2 i+1)} &amp;=\cos \left(p o s / 10000^{2 i / d_{\text {model }}}\right)<br>\end{aligned}<br>$$</p>
+<h3 id="为何使用self-attention"><a href="#为何使用self-attention" class="headerlink" title="为何使用self-attention"></a>为何使用self-attention</h3><ul>
+<li>每层的总计算复杂度</li>
+<li>可并行性</li>
+<li>网络中远程依赖项之间的路径长度</li>
+</ul>
+<p> <img src="/2022/02/27/transformer/v2-197559ccb4049ff985e6f095a68a5c37_r.jpg" alt="img"> </p>
+<p> <img src="/2022/02/27/transformer/v2-3ce7a8eea027f468ea0d8926b8f149b5_r.jpg" alt="img"> </p>
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
+<li>并行效率高：相较于RNN 第t时间步的隐藏状态ht要等前一个时间步ht-1的隐藏状态输出之后才能处理； Transformer同时提取所有上下文的信息。</li>
+<li>信息传递损失小： RNN在序列过长会导致梯度爆炸或梯度消失或遗忘，RNN改进模型LSTM和GRU能够部分解决梯度消失的问题。transformer获取所有位置的信息的距离都是1。</li>
+<li>信息融合效率高：卷积每次看比较小的窗口，对于距离较远的像素，需要很多层卷积一层一层扩大感受野才能把两个像素融合起来。transformer获取所有位置的信息的距离都是1。</li>
+</ol>
 ]]></content>
       <categories>
-        <category>杂七杂八</category>
+        <category>深度学习</category>
       </categories>
       <tags>
-        <tag>杂七杂八</tag>
+        <tag>深度学习</tag>
       </tags>
   </entry>
   <entry>
@@ -2037,342 +2373,6 @@ sudo /sbin/chkconfig --add grafana-server<span aria-hidden="true" class="line-nu
 <p><img src="/2022/03/05/rec/1647868665661.png" alt="1647868665661"></p>
 <p>COPS-REF上的结果</p>
 <p><img src="/2022/03/05/rec/1647868676707.png" alt="1647868676707"></p>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>线段树模板及常见应用</title>
-    <url>/2022/03/06/test/</url>
-    <content><![CDATA[<h2 id="线段树"><a href="#线段树" class="headerlink" title="线段树"></a>线段树</h2><h3 id="区间修改，区间查询"><a href="#区间修改，区间查询" class="headerlink" title="区间修改，区间查询"></a>区间修改，区间查询</h3><pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">#include &lt;bits/stdc++.h&gt;
-#define ll(x) (x &lt;&lt; 1)
-#define rr(x) (x &lt;&lt; 1 | 1)
-using namespace std;
-const int N = 400000 + 5;
-typedef long long lol;
-
-lol n, m;
-lol w[N];
-
-struct seg_tree {
-    lol sum, l, r, lazy;
-} t[N];
-
-lol gi() {
-    lol ans = 0, f = 1;
-    char i = getchar();
-    while (i &lt; '0' || i &gt; '9') {
-        if (i == '-') f = -1;
-        i = getchar();
-    }
-    while (i &gt;= '0' &amp;&amp; i &lt;= '9') {
-        ans = ans * 10 + i - '0';
-        i = getchar();
-    }
-    return ans * f;
-}
-
-void up(lol root) {
-    t[root].sum = t[ll(root)].sum + t[rr(root)].sum;
-}
-
-void build(lol root, lol l, lol r) {
-    int mid = l + r &gt;&gt; 1;
-    t[root].l = l, t[root].r = r;
-    if (l == r) {
-        t[root].sum = w[l];
-        return;
-    }
-    build(ll(root), l, mid);
-    build(rr(root), mid + 1, r);
-    up(root);
-}
-
-void pushdown(lol root) {
-    lol mid = t[root].l + t[root].r &gt;&gt; 1;
-    t[ll(root)].lazy += t[root].lazy;
-    t[rr(root)].lazy += t[root].lazy;
-    t[ll(root)].sum += t[root].lazy * (mid - t[root].l + 1);
-    t[rr(root)].sum += t[root].lazy * (t[root].r - mid);
-    t[root].lazy = 0;
-}
-
-
-
-void updata(lol root, lol l, lol r, lol val) {
-    lol mid = t[root].l + t[root].r &gt;&gt; 1;
-    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) {
-        t[root].sum += val * (t[root].r - t[root].l + 1);
-        t[root].lazy += val;
-        return;
-    }
-    if (t[root].lazy) pushdown(root);
-    if (l &lt;= mid) updata(ll(root), l, r, val);
-    if (mid &lt; r) updata(rr(root), l, r, val);
-    up(root);
-}
-
-lol query(lol root, lol l, lol r) {
-    if (l &lt;= t[root].l &amp;&amp; t[root].r &lt;= r) return t[root].sum;
-    if (r &lt; t[root].l || t[root].r &lt; l) return 0;
-    if (t[root].lazy) pushdown(root);
-    return query(ll(root), l, r) + query(rr(root), l, r);
-}
-
-int main() {
-    lol f, x, y, val;
-    n = gi();
-    m = gi();
-    for (lol i = 1; i &lt;= n; i++)
-        w[i] = gi();
-    build(1, 1, n);
-    for (lol i = 1; i &lt;= m; i++) {
-        f = gi();
-        x = gi();
-        y = gi();
-        if (f == 1)
-            val = gi(), updata(1, x, y, val);
-        else
-            printf("%lld\n", query(1, x, y));
-    }
-    return 0;
-}<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>]]></content>
-      <categories>
-        <category>算法</category>
-      </categories>
-      <tags>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Transformer</title>
-    <url>/2022/02/27/transformer/</url>
-    <content><![CDATA[<h2 id="注意力机制"><a href="#注意力机制" class="headerlink" title="注意力机制"></a>注意力机制</h2><h3 id="Memory-Based"><a href="#Memory-Based" class="headerlink" title="Memory-Based"></a>Memory-Based</h3><p>QKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是 question，v 是 answer，q 是新来的 question，看看历史 memory 中 q 和哪个 k 更相似，根据相似度决定权重，使用k 对应的 v，合成当前 question 的 answer。</p>
-<p>注意力函数是对一个query向量，让它和一系列的key向量-value向量对进行映射并输出结果的函数，输出是value的加权和，权重是key和query的相似度计算来的；即使key-value对不改变，随着query的改变，输出向量会不一样,但输出的维度是和value一样的。</p>
-<p>从本质上理解，Attention是从大量信息中有选择地筛选出少量重要信息并聚焦到这些重要信息上，忽略大多不重要的信息。聚焦的过程体现在权重系数的计算上，权重越大越聚焦于其对应的Value值上，即权重代表了信息的重要性，而Value是其对应的信息。</p>
-<img src="1645790269336.png" alt="1645790269336" style="zoom: 50%;">
-
-<p>工作流程：</p>
-<p>attention函数共有三步完成得到attention value。</p>
-<ul>
-<li>Q与K进行相似度计算得到权值</li>
-<li>对上部权值归一化</li>
-<li>用归一化的权值与V加权求和</li>
-</ul>
-<p> 将Source中的构成元素想象成是由一系列的(Key,Value)数据对构成，此时给定Target中的某个元素Query，通过计算Query和各个Key的相似性或者相关性，得到每个Key对应Value的权重系数，然后对Value进行加权求和，即得到了最终的Attention数值。所以本质上Attention机制是对Source中元素的Value值进行加权求和，而Query和Key用来计算对应Value的权重系数。即可以将其本质思想改写为如下公式： </p>
-<p>$$<br>\text { Attention }\left(\text { Query }<em>{j}, \text { Source }\right)=\sum</em>{i=1}^{N} \text { Similarity }\left(\text { Query }<em>{j}, \text { Key }</em>{i}\right) * \text { Value }_{i}<br>$$</p>
-<p>在自然语言任务中，往往K和V是相同的。这时计算出的attention value是一个向量，代表序列元素$xj$的编码向量。此向量中包含了元素$xj$的上下文关系，即包含全局联系也拥有局部联系。全局联系是因为在求相似度的时候，序列中元素与其他所有元素的相似度计算，然后加权得到了编码向量。局部联系可以这么解释，因为它所计算出的attention value是属于当前输入的$x_j$的。这也就是attention的强大优势之一，它可以灵活的捕捉长期和local依赖，而且是一步到位的。</p>
-<img src="1645791150589.png" alt="1645791150589" style="zoom: 50%;">
-
-<h3 id="Transformer中的使用"><a href="#Transformer中的使用" class="headerlink" title="Transformer中的使用"></a>Transformer中的使用</h3><ul>
-<li><p>对依赖项进行建模，无需考虑它们在输入/输出序列中的距离。</p>
-</li>
-<li><p>完全抛弃了卷积和递归，只使用注意力机制来构建输入和输出之间的全局依赖关系。</p>
-</li>
-<li><p>由于传统的卷积神经网络中，关联来自于任意两个输入/输出位置的信号所需的操作随着二者的位置之间的距离而增长，这使得网络更加难以学习远距离位置之间的依赖关系。Transformer能够将这样的操作减少到一个恒定的数目（任意两个单位之间的距离相同）。同时，考虑到平均注意力加权降低了有效分辨率的缺陷，Transformer采用了多头注意力机制。</p>
-</li>
-<li><p>Self-Attention：一种将单个序列的不同位置关联起来以计算序列表示的注意力机制。</p>
-</li>
-</ul>
-<p><strong>优点</strong>：</p>
-<ul>
-<li>能够捕捉全局和局部的联系，从attention函数就可以看出来，它先是进行序列的每一个元素与其他元素的对比，在这个过程中每一个元素间的距离都是一，因此它比时间序列RNNs的一步步递推得到长期依赖关系好的多，越长的序列RNNs捕捉长期依赖关系就越弱。</li>
-<li>提供并行性，能通过并行计算减少模型训练时间</li>
-<li>模型复杂度小，参数少</li>
-</ul>
-<p><strong>缺点</strong>：</p>
-<ul>
-<li>Attention机制不是”distance-aware”的，它不能捕捉语序顺序，而在NLP中语序顺序是很重要的（对此，Transformer采用的处理方式是Position Encoding，在计算机视觉领域是如何解决的？查阅资料发现同样是采用Position Encoding进行解决的。（待读论文：Image Transformer、Vision Transformer）可否通过预训练使得模型具有识别图像序列顺序的能力？）</li>
-</ul>
-<h2 id="Encoder-Decoder"><a href="#Encoder-Decoder" class="headerlink" title="Encoder-Decoder"></a>Encoder-Decoder</h2><h3 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h3><img src="1645587474058.png" alt="1645587474058" style="zoom: 50%;">
-
-<p><strong>Example</strong>【 <a href="https://zhuanlan.zhihu.com/p/364659780">Bert前篇：手把手带你详解Transformer原理 - 知乎 (zhihu.com)</a> 】：</p>
-<img src="v2-31a51936a0af60dd63e68c98e3a7ab0f_r.jpg" alt="preview" style="zoom: 50%;">
-
-<h3 id="Encoder"><a href="#Encoder" class="headerlink" title="Encoder"></a>Encoder</h3><p>由6个相同的层组成，每个层包括两个子层，第一个是多头自注意力机制，第二个是简单的position-wise全连接神经网络。在每个子层周围使用残差连接，然后进行层 normalization。每个sub-层的输出为$LayerNorm(x+Sublayer(x))$。</p>
-<p><strong>Q：position-wise指的是什么？</strong></p>
-<p>解释一：区别于普通的全连接网络，这里FFN的输入是序列中每个位置上的元素，而不是整个序列，所以每个元素完全可以独立计算，最极端节省内存的做法是遍历序列，每次只取一个元素得到FFN的结果，但是这样做时间消耗太大，“分段”的含义就是做下折中，将序列分成子段，也就是多个子序列，每次读取一个子序列进行FFN计算，最后将多份的结果拼接。 </p>
-<p>解释二： 从卷积的角度解释，这里的FFN等价于kernel_size=1的卷积，这样每个position都是独立运算的。如果kernel_size=2，或者其他，position之间就具有依赖性了，不能叫做position-wise了。</p>
-<h3 id="Decoder"><a href="#Decoder" class="headerlink" title="Decoder"></a>Decoder</h3><p>同样是6个相同的层组成，但是每个层包括三个子层，第三个sub-层用于对Encoder堆栈的输出执行多头注意力机制。残差连接与Encoder相同。修改了注意力层以避免当前位置继续参与（attend）到后面的位置中。</p>
-<p><strong>Mask</strong>：Mask操作是为了避免解码器在训练的时候看到当前时刻看到以后时间的信息。</p>
-<p>对于t时刻的query，应该只看到key(1), key(2),…key(t-1)的数据，因为key(t)在当前时刻还不存在。</p>
-<p>Masked的作用是使对应value的权值为0，对于query(t)和未来时刻的key的内积，赋值为负无穷大（-inf），这样使用softmax计算权值为0，所以计算output的时候只用到了t-1以前时刻的key-value pair的信息。保证了训练时和预测时的情况是一样的。</p>
-<img src="1645862082581.png" alt="1645862082581" style="zoom: 33%;">
-
-<p>mask的具体做法：（ <a href="https://zhuanlan.zhihu.com/p/364659780">Bert前篇：手把手带你详解Transformer原理 - 知乎 (zhihu.com)</a> ）</p>
-<p><img src="/2022/02/27/transformer/1645865219155.png" alt="1645865219155"></p>
-<h2 id="Attention"><a href="#Attention" class="headerlink" title="Attention"></a>Attention</h2><img src="1645778258219.png" alt="1645778258219" style="zoom: 67%;">
-
-<h3 id="Scaled-Dot-Product-Attention"><a href="#Scaled-Dot-Product-Attention" class="headerlink" title="Scaled Dot-Product Attention"></a>Scaled Dot-Product Attention</h3><p>输入由维度为$d_k$的queries和key以及维度为$d_v$的values组成。使用所有keys计算queries的点积，并除以$\sqrt{d_k}$，然后用softmax函数获得与values相乘的权重。公式如下：</p>
-<p>$$<br>\text { Attention }(Q, K, V)=\operatorname{softmax}\left(\frac{Q K^{T}}{\sqrt{d_{k}}}\right) V<br>$$<br><strong>做法含义</strong>： 向量内积是一个向量在另一个向量上的投影长度乘以另一个向量的长度。内积的几何意义是一个向量在另一个向量上的投影，进而内积越大说明相似度越高。</p>
-<p>对于attention中计算两个向量之间的相关度，两个常用函数为Additive attention和dot-product（multiple） attention。点积从公式中可以体现出来，Additive attention是使用一个前馈神经网络（只含一个隐藏层）来计算兼容性函数。</p>
-<p>二者优缺点分析：dot-product attention，可以利用矩阵运算，计算速度更快，并且更节省空间，但是要求 Q 和 K向量维度相同，如果不同需要进行一定的映射变换。在dk较小时二者表现相似，但是dk较大时，dot-product attention表现不如additive attention，因为dk较大时点积之后的结果较大，求softmax之后，梯度会很小，不利于计算，需要做一定的缩放。</p>
-<p>知乎：较长的序列（512）会导致QK的内积的方差很大，相对差距变大，极值做出来softmax会倾向于1， 计算的梯度接近0，导致难以学习，除以sqrt(dk)可以避免这种情况。</p>
-<p>参考：</p>
-<ul>
-<li><a href="https://www.jianshu.com/p/70905e28d662">Additive Attention 和 Dot-product Attention</a> </li>
-<li><a href="https://zhuanlan.zhihu.com/p/434357918">Transformer论文详解——想不懂都难 - 知乎 (zhihu.com)</a></li>
-</ul>
-<p><strong>作者采用的方案以及性能上的讨论</strong>：由于dot-product可以用高性能的矩阵乘法进行优化，计算速度快，空间上也更优，作者采用了dot-product。当$d_k$较小的时候，两种机制表现相近，Additive在$d_k$值较大的时候，无需对其缩放，因此性能优于dot-product。作者的观点是对于较大的$d_k$，dot-product在规模（magnitude）上会更大，这将softmax函数推入了极小梯度的区域。因此他们在公式中进行了除以$\sqrt{d_k}$这样一个缩放。</p>
-<h3 id="Multi-Head-Attention"><a href="#Multi-Head-Attention" class="headerlink" title="Multi-Head Attention"></a>Multi-Head Attention</h3><p><strong>原理</strong>：与对keys、values、queries使用一个注意力机制不同，作者提出了一种更有效的方法：使用不同的线性投影，将queries、keys、values分别投影到$d_k$、$d_k$、$d_v$维（进行h次），然后在投影之后的queries、keys、values上并行执行attention function，得到维度为$d_v$的输出，然后将他们连接（concat）起来后再次投影产生最终值。	</p>
-<p> <img src="/2022/02/27/transformer/v2-70a3f25fa1b618ecd9811567daca4ec9_r.jpg" alt="img"> </p>
-<p><strong>优点</strong>：允许模型共同关注来自不同位置的不同表示子空间的信息，对于单个注意力头，平均化会抑制这一点。</p>
-<p><img src="/2022/02/27/transformer/1645781140551.png" alt="1645781140551"></p>
-<p><strong>实验参数</strong>：$h=8,d_k=d_v=d_{model}/h=64$</p>
-<p><strong>性能讨论</strong>：由于每个头维度减少，总体计算量与单头注意力机制近似。</p>
-<h3 id="Position-wise-Feed-Forward-Network"><a href="#Position-wise-Feed-Forward-Network" class="headerlink" title="Position-wise Feed-Forward Network"></a>Position-wise Feed-Forward Network</h3><p>除了注意力子层外，编码器与编码器中的每一层都包含一个全连接的前馈神经网络，分别相同应用于每个位置。包含两个线性变化，二者之间有一个ReLU激活函数。<br>$$<br>\operatorname{FFN}(x)=\max \left(0, x W_{1}+b_{1}\right) W_{2}+b_{2}<br>$$<br>transformer抽取序列信息：attention把序列里的信息抓取出来，在每个点做了一次全局的汇聚，里面包含了感兴趣的序列信息，以至于后面经过mlp做投影，把向量映射到更想要的语义空间，因为每个点都包含了序列相关信息，所以对每个点独立做MLP就可以了，这就是transformer如何抽取“序列信息”并加工的方法。</p>
-<p>RNN抽取序列信息：MLP权重W是共用的，时序信息是通过把上一个时刻的输出接到当前时刻，与当前时刻的输入合并，再经过MLP,实现了序列信息的汇聚和提取。</p>
-<p>区别：都是用MLP实现语义空间的转换，不一样的是如何传递“序列信息”。</p>
-<img src="1645863103955.png" alt="1645863103955" style="zoom: 33%;">
-
-<p><strong>实验参数</strong>：</p>
-<ul>
-<li>输入/输出维度$d_{model}=512$</li>
-<li>inner-层维度$d_{ff}=2048$</li>
-</ul>
-<h3 id="Embedding-amp-Softmax"><a href="#Embedding-amp-Softmax" class="headerlink" title="Embedding &amp; Softmax"></a>Embedding &amp; Softmax</h3><p>通过学习好的Embedding将输入/输出token转换为维度为$d_{model}$的向量。在嵌入层中，作者对权重乘以$\sqrt{d_{model}}$</p>
-<p>原因：Embedding的分布往往是$N(1, \frac{1}{\sqrt{d_{model}}})$</p>
-<h3 id="Position-Encoding"><a href="#Position-Encoding" class="headerlink" title="Position Encoding"></a>Position Encoding</h3><p>为了让模型利用序列的顺序，需要在序列中注入关于序列的相对或绝对位置的信息。</p>
-<p><strong>做法</strong>：在解码器/编码器的堆栈底部加入位置编码（Position Encoding）。位置编码与Embedding具有相同的维度$d_{model}$，二者可以直接相加。位置编码可以有多种选择，通过学习得到的（learned）或是固定的（fixed）。Transformer采用绝对位置编码。</p>
-<p>在这里论文中使用了$sin$和$cos$函数的线性变换来提供给模型位置信息:<br>$$<br>\begin{aligned}<br>P E_{(p o s, 2 i)} &amp;=\sin \left(p o s / 10000^{2 i / d_{\text {model }}}\right) \<br>P E_{(p o s, 2 i+1)} &amp;=\cos \left(p o s / 10000^{2 i / d_{\text {model }}}\right)<br>\end{aligned}<br>$$</p>
-<h3 id="为何使用self-attention"><a href="#为何使用self-attention" class="headerlink" title="为何使用self-attention"></a>为何使用self-attention</h3><ul>
-<li>每层的总计算复杂度</li>
-<li>可并行性</li>
-<li>网络中远程依赖项之间的路径长度</li>
-</ul>
-<p> <img src="/2022/02/27/transformer/v2-197559ccb4049ff985e6f095a68a5c37_r.jpg" alt="img"> </p>
-<p> <img src="/2022/02/27/transformer/v2-3ce7a8eea027f468ea0d8926b8f149b5_r.jpg" alt="img"> </p>
-<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
-<li>并行效率高：相较于RNN 第t时间步的隐藏状态ht要等前一个时间步ht-1的隐藏状态输出之后才能处理； Transformer同时提取所有上下文的信息。</li>
-<li>信息传递损失小： RNN在序列过长会导致梯度爆炸或梯度消失或遗忘，RNN改进模型LSTM和GRU能够部分解决梯度消失的问题。transformer获取所有位置的信息的距离都是1。</li>
-<li>信息融合效率高：卷积每次看比较小的窗口，对于距离较远的像素，需要很多层卷积一层一层扩大感受野才能把两个像素融合起来。transformer获取所有位置的信息的距离都是1。</li>
-</ol>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-      </categories>
-      <tags>
-        <tag>深度学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Vision Transformer</title>
-    <url>/2022/03/02/vit/</url>
-    <content><![CDATA[<h2 id="已有研究"><a href="#已有研究" class="headerlink" title="已有研究"></a>已有研究</h2><p>Transformer在NLP上的成功</p>
-<p>Attention机制在CV领域的应用，能够完全替代卷积且在理论上验证有效。</p>
-<p>缺陷：</p>
-<ul>
-<li>由于使用了专门的注意力机制，但未在现代硬件加速器上有效拓展，计算效率低</li>
-<li>在大规模数据集上，Resnet-like的架构依然是SOTA</li>
-</ul>
-<p>作者的工作：尽可能少的修改标准的Transformer，将其应用于图像领域。</p>
-<h2 id="自注意力机制的应用"><a href="#自注意力机制的应用" class="headerlink" title="自注意力机制的应用"></a>自注意力机制的应用</h2><p>核心思想：以每个像素作为序列中的元素会导致很高的计算复杂度，因此通过一些方法缩短序列的长度。</p>
-<ul>
-<li>Parmar et al. (2018）：仅在每个查询像素的局部邻域中应用自注意力机制，而非全局应用。stand alone attention</li>
-<li>Hu et al., 2019; Ramachandran et al., 2019; Zhao et al., 2020：使用上述方法，完全替代了卷积。</li>
-<li>Sparse Transformers (Child et al., 2019) ：应用了全局注意力的可拓展近似（scalable approximation）</li>
-<li>Weissenborn et al., 2019：将自注意力机制用于大小不同的块中，以扩展（scale）注意力。</li>
-<li>Hoet al., 2019; Wang et al., 2020a：尝试了一种极端情况，只沿单个轴。轴注意力axial attention，先在横轴上做注意力，再在纵轴上做注意力。</li>
-</ul>
-<p>上述方法的缺陷：需要复杂的工程才能高效应用于硬件加速器。</p>
-<p>相似研究：</p>
-<ul>
-<li>Cordonnier et al. (2020)：将输入图像分割成多个大小为2x2的块，在顶部（top）应用完整的自注意力机制。</li>
-<li>缺陷：仅适用于小分辨率图像，且效果不如SOTA的CNN。</li>
-</ul>
-<h3 id="其他研究（TODO）"><a href="#其他研究（TODO）" class="headerlink" title="其他研究（TODO）"></a>其他研究（TODO）</h3><p>结合self-attention的CNN</p>
-<p>image GPT（iGPT）</p>
-<p>使用额外数据集以取得SOTA结果</p>
-<p>当数据集大小变化时，CNN的性能变化</p>
-<p>CNN在大规模数据集上进行迁移学习的研究</p>
-<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="/2022/03/02/vit/1646548420444.png" alt="1646548420444"></p>
-<p>首先将图像分为多个固定大小的patches，通过线性映射层（linear embedding）获得输入。由于图片块本身是有相对位置的，而transformer中不考虑位置信息，因此加入position embedding，然后将生成的向量序列送到标准的Transformer编码器中。为了实现分类，向序列中添加额外的可学习的”classification token”（模仿BERT），CLS token。</p>
-<h2 id="输入的转换"><a href="#输入的转换" class="headerlink" title="输入的转换"></a>输入的转换</h2><p>将图像拆分成块，通过线性Embedding对这些patch进行转换，作为Transformer的输入。</p>
-<p>Image patch相当于NLP中的tokens（words），即题目所表达的，一张图片相当于很多个16x16的单词。</p>
-<p>效果：在Imagenet-1k这样的较小的数据集上比Resnet要低几个百分点，但是在大数据集上达到了SOTA。</p>
-<p>原因：Transformer缺少CNN固有的inductive biaes，如平移等变性（translation equivariance）和局部性，因此在数据量不足的时候并不能很好的泛化。</p>
-<p>改进方法：在大规模数据集（14M-300M images）上进行训练。</p>
-<p>ViT存在的缺陷：需要大数据集上进行训练才能够取得优秀的效果。</p>
-<p>输入维度的转换：</p>
-<p>$(H,W,C)\rightarrow(N,P^2*C)$，其中（H，W）是图像的分辨率，C是channels的数目。（P，P）是image patch的分辨率，$N=HW/P^2$是patch的数量，作为Transformer的有效输入长度。</p>
-<p>Transformer在所有层中使用恒定的潜在向量大小D，作者将patch展平，并通过可训练的线性投射层将其映射到D维。</p>
-<h2 id="Position-Embedding"><a href="#Position-Embedding" class="headerlink" title="Position Embedding"></a>Position Embedding</h2><p>并非直接传具体的数字1,2,3,….而是有一个表，表的每一行代表了序号，每一行是一个向量，维度是768（$16<em>16</em>3$），这个表通过学习得到。然后将这个向量信息加到前面生成的向量里面（197x768：其中196是patch的个数，注：224x224的图片，16x16的patch size。然后还有个cls token（197x1）），这里的加并非concatenation，是直接sum。</p>
-<p>使用标准的1D可学习的Position embedding，没有用2D的是因为没有显著提升。</p>
-<p>从附录中的figure 10也可以看到，Position Embedding是能够通过学习得到相对位置信息的，且能够学习到2D的邻域相似性。这也验证了上面的结论。</p>
-<img src="1646569234586.png" alt="1646569234586" style="zoom:67%;">
-
-<h2 id="归纳偏置"><a href="#归纳偏置" class="headerlink" title="归纳偏置"></a>归纳偏置</h2><p>归纳偏置：一种先验知识（提前做好的假设）</p>
-<ul>
-<li>locality：卷积神经网络以滑动窗口的形式，一点一点在图片上进行卷积，因此假设在图片上相邻的区域会有相邻的特征。</li>
-<li>平移等变形translation equivariance：$f(g(x))=g(f(x))$，无论先做f函数还是g函数，结果是不变的。其中f可以理解为卷积操作，g可以理解为平移操作。</li>
-</ul>
-<p>相较于CNN，ViT的image-specific归纳偏差要少得多。</p>
-<p>在CNN中，整个模型的每一层有局部性，平移等效性，二维邻域结构。</p>
-<p>在ViT中，只有MLP具有平移等效性和局部性，自注意力是全局的。</p>
-<p>二维邻域结构的时候非常谨慎：在模型开始时，通过将图像切割成块并在fine-tuning time来调整针对不同分辨率图像的Position Embedding。除此之外，初始化时的position embedding不携带有关patch的2D位置信息，必须从头学习patch之间的所有空间关系。</p>
-<h2 id="混合模型"><a href="#混合模型" class="headerlink" title="混合模型"></a>混合模型</h2><p>输入序列由CNN的特征图组成，而非原始的图像块。</p>
-<p>然后通过patch embedding projection对从CNN特征图中提取得到的序列进行处理。</p>
-<p>在特殊情况下，patch的空间大小可以为1x1，这意味着输入序列是通过简单地将特征图的空间维度展平并投影到Transformer的维度上获得的。</p>
-<h2 id="微调以及更高的分辨率"><a href="#微调以及更高的分辨率" class="headerlink" title="微调以及更高的分辨率"></a>微调以及更高的分辨率</h2><p>将预训练的ViT模型的预测头移除，加入一个零初始化的DxK的前馈层，其中K是下游任务中类别的数量。</p>
-<p>对于更高的分辨率，保持patch size不变，这样会产生更大的有效序列长度。</p>
-<p>ViT可以在内存限制范围内处理任意长度的序列，但预训练的position embedding可能就不再适用了。</p>
-<p>因此作者根据它们在原始图像中的位置，对预训练的position embedding进行2D插值。这种分辨率上的调整和patch extraction是将有关图像2D结构的归纳偏置注入到ViT的唯一的点。</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>预训练</p>
-<ul>
-<li>ILSVRC-2012（1.3M images、1k classes）文中称之为Imagenet。</li>
-<li>ImageNet-21k （14M images、21k classes）</li>
-<li>JFT（303M 高分辨率images、18k classes）</li>
-</ul>
-<p>下游任务</p>
-<ul>
-<li>ImageNet on the original validation labels and the cleaned-up<br>ReaL labels </li>
-<li>CIFAR-10/100 </li>
-<li>Oxford-IIIT Pets</li>
-<li>Oxford Flowers-102</li>
-<li>19-task VTAB classification suite</li>
-</ul>
-<p>预处理方法见（ Kolesnikov et al. (2020））</p>
-<h3 id="模型变体"><a href="#模型变体" class="headerlink" title="模型变体"></a>模型变体</h3><img src="1646554416365.png" alt="1646554416365" style="zoom:67%;">
-
-<p>ViT-L/16 means the“Large” variant with 16 × 16 input patch size.</p>
-<p>Transformer的序列长度与块大小的平方成反比，因此块大小较小的模型计算成本更高。</p>
-<h3 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h3><p>Resnet，但是batch normalization换成了group normalization，并采用了标准化的卷积。</p>
-<p>对于混合体，将中间特征图输入到ViT中，patch大小为一个像素。</p>
-<h3 id="训练参数-TODO"><a href="#训练参数-TODO" class="headerlink" title="训练参数(TODO)"></a>训练参数(TODO)</h3><h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><p>通过linear few-shot或者fine-tuning accuracy来进行评价。</p>
-<p>fine-tuning accuracy在模型微调后进行评估。</p>
-<p>linear few-shot是通过解决正则化最小二乘回归问题得到的，该问题将训练图像子集的（冻结）表示映射到${-1,1}^k$目标向量。即不去finetune，直接拿来做特征提取器，做一个regression。</p>
-<p>在评价中主要用fine-tuning accuracy，在微调成本过高时使用few-shot进行快速动态评估。</p>
-<h3 id="与SOTA模型的比较"><a href="#与SOTA模型的比较" class="headerlink" title="与SOTA模型的比较"></a>与SOTA模型的比较</h3><p>在性能指标有微小的提升，但是预训练使用的资源大大减少。</p>
-<p>对于数据集大小较为敏感，需要大量数据集进行训练。在Imagenet上不如Resnet，但是在更大的数据集上超国了Resnet。</p>
-<p>在迁移学习的准确率上，ViT的效果要好过Resnet。在预训练计算量较小时，hybrid能够改进纯transformer。但随着模型的增大，这种差异消失了。这一现象是惊人的，因为人们在直觉上会觉得，卷积局部特征处理能够帮助任何大小的ViT。此外，ViT在作者尝试过的预训练计算量范围内并没有达到性能饱和，因此可以做进一步的拓展，有进一步提升的空间。</p>
-<p>作者的结论：卷积归纳偏差对较小的数据集很有用，但对于较大的数据集，直接从数据中学习相关模式就足够了，甚至是beneficial的。</p>
-<h3 id="自监督训练"><a href="#自监督训练" class="headerlink" title="自监督训练"></a>自监督训练</h3><p>采用自监督方法（masked patch prediction，模仿BERT），使用ViT-B/16在Imagenet上实现了79.9%的准确率，比从头开始训练高了2%，但是依然比有监督训练低了4%。</p>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>与先前的使用自注意力机制的CV工作不同（采用image-specific的归纳偏置、ViT仅在对初始patch进行提取的时候使用了），ViT将图像表达为一系列的patch，并使用NLP中的Transformer对序列进行处理。这在大规模的数据集上取得了SOTA的效果，同时能够保持一个相对低的预训练代价。</p>
-<p><strong>Further Work</strong></p>
-<ul>
-<li>将ViT应用于检测和分割任务</li>
-<li>进行基于自监督学习的预训练方法的探索</li>
-</ul>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>优点</p>
-<ul>
-<li>使用相对少的计算资源</li>
-<li>在大数据集上取得了SOTA</li>
-<li>可以通过预训练进一步提升性能，在已观测范围内未达到性能饱和</li>
-</ul>
-<p>缺点</p>
-<ul>
-<li>在中小数据集上效果不佳（可以考虑采用混合模型，加入CNN的归纳偏置以提升效果）</li>
-<li>在图片分辨率变化较大的时候，仅仅通过简单的2D插值难以保持Position Embedding的有效性</li>
-</ul>
-<p>进一步的工作</p>
-<ul>
-<li>论文仅在分类任务上做了验证，还可以尝试用于检测和分割任务</li>
-<li>改进自监督学习的方法</li>
-</ul>
 ]]></content>
       <categories>
         <category>深度学习</category>
