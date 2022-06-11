@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-05-09T05:55:09.250Z</updated>
+  <updated>2022-06-11T14:31:05.642Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -15,6 +15,27 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何复现论文</title>
+    <link href="https://kkakkkka.github.io/2022/06/11/howtoreproduce/"/>
+    <id>https://kkakkkka.github.io/2022/06/11/howtoreproduce/</id>
+    <published>2022-06-11T14:30:34.000Z</published>
+    <updated>2022-06-11T14:31:05.642Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2</summary>
+        
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>一行Python指令实现文件共享</title>
@@ -99,7 +120,7 @@
     <link href="https://kkakkkka.github.io/2022/03/21/t5/"/>
     <id>https://kkakkkka.github.io/2022/03/21/t5/</id>
     <published>2022-03-21T09:34:05.000Z</published>
-    <updated>2022-05-26T03:02:17.413Z</updated>
+    <updated>2022-06-11T14:27:44.945Z</updated>
     
     
       
@@ -112,6 +133,8 @@
       
     
     
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
     
     
     <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
