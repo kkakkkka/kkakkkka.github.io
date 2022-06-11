@@ -6,7 +6,7 @@
   <link href="https://kkakkkka.github.io/atom.xml" rel="self"/>
   
   <link href="https://kkakkkka.github.io/"/>
-  <updated>2022-06-11T14:31:05.642Z</updated>
+  <updated>2022-06-11T14:35:25.656Z</updated>
   <id>https://kkakkkka.github.io/</id>
   
   <author>
@@ -17,23 +17,52 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>t5model</title>
+    <link href="https://kkakkkka.github.io/2022/06/11/t5model/"/>
+    <id>https://kkakkkka.github.io/2022/06/11/t5model/</id>
+    <published>2022-06-11T14:34:41.000Z</published>
+    <updated>2022-06-11T14:35:25.656Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h2&gt;&lt;p&gt;T5（Transfer Text-to-Text</summary>
+        
+      
+    
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>如何复现论文</title>
     <link href="https://kkakkkka.github.io/2022/06/11/howtoreproduce/"/>
     <id>https://kkakkkka.github.io/2022/06/11/howtoreproduce/</id>
     <published>2022-06-11T14:30:34.000Z</published>
-    <updated>2022-06-11T14:31:05.642Z</updated>
+    <updated>2022-06-11T14:33:56.614Z</updated>
     
     
       
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;新领域无从下手&quot;&gt;&lt;a href=&quot;#新领域无从下手&quot; class=&quot;headerlink&quot;</summary>
         
       
     
     
     
+    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="方法论" scheme="https://kkakkkka.github.io/tags/%E6%96%B9%E6%B3%95%E8%AE%BA/"/>
     
   </entry>
   
@@ -49,10 +78,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;一行Python指令实现文件共享&quot;&gt;一行Python指令实现文件共享&lt;/h2&gt;
-&lt;p&gt;首先在终端切换到需要共享的文件目录&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;1652073769778.png&quot; alt=&quot;1652073769778&quot;&gt;&lt;/p&gt;
-&lt;h3</summary>
+    <summary type="html">&lt;h2 id=&quot;一行Python指令实现文件共享&quot;&gt;&lt;a href=&quot;#一行Python指令实现文件共享&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -77,7 +103,7 @@
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -102,7 +128,7 @@
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;第一周&quot;&gt;&lt;a href=&quot;#第一周&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -112,32 +138,6 @@
     
     
     <category term="C++" scheme="https://kkakkkka.github.io/tags/C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>T5</title>
-    <link href="https://kkakkkka.github.io/2022/03/21/t5/"/>
-    <id>https://kkakkkka.github.io/2022/03/21/t5/</id>
-    <published>2022-03-21T09:34:05.000Z</published>
-    <updated>2022-06-11T14:27:44.945Z</updated>
-    
-    
-      
-      
-        
-        
-    <summary type="html">&lt;h2 id=&quot;Abstract-3&quot;&gt;Abstract&lt;/h2&gt;
-&lt;p&gt;T5（Transfer Text-to-Text Transformer）模型：一个统一框架，靠着大力出奇迹，将所有 NLP 任务都转化成 Text-to-Text</summary>
-        
-      
-    
-    
-    
-    <category term="深度学习" scheme="https://kkakkkka.github.io/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-    <category term="深度学习" scheme="https://kkakkkka.github.io/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
@@ -198,8 +198,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Abstract-2&quot;&gt;Abstract&lt;/h2&gt;
-&lt;p&gt;引用表达式理解 (Referring expression</summary>
+    <summary type="html">&lt;h2 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h2&gt;&lt;p&gt;引用表达式理解 (Referring expression</summary>
         
       
     
@@ -224,11 +223,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;Introduction-4&quot;&gt;Introduction&lt;/h2&gt;
-&lt;p&gt;VG：在图像中定位结构化描述的元素。&lt;/p&gt;
-&lt;p&gt;结构化描述：一个自然语言短语，被解析为一个场景图或主谓宾三元组。&lt;/p&gt;
-&lt;h3 id=&quot;场景图&quot;&gt;场景图&lt;/h3&gt;
-&lt;p&gt;&lt;img</summary>
+    <summary type="html">&lt;h2 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -253,7 +248,7 @@
       
         
         
-    <summary type="html">&lt;h2</summary>
+    <summary type="html">&lt;h2 id=&quot;已有研究&quot;&gt;&lt;a href=&quot;#已有研究&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -279,7 +274,7 @@
         
         
     <summary type="html">&lt;p&gt;SYSU-SCC的选拔赛搭建系统题，因为升学计划改变，没有接着做优化题，最后也没有加入超算队，但从这些题目中学习了很多知识。记录一下这些非常好的集群入门题。&lt;/p&gt;
-&lt;h2</summary>
+&lt;h2 id=&quot;概览&quot;&gt;&lt;a href=&quot;#概览&quot; class=&quot;headerlink&quot;</summary>
         
       
     
@@ -304,9 +299,7 @@
       
         
         
-    <summary type="html">&lt;h2 id=&quot;注意力机制&quot;&gt;注意力机制&lt;/h2&gt;
-&lt;h3 id=&quot;Memory-Based&quot;&gt;Memory-Based&lt;/h3&gt;
-&lt;p&gt;QKV模型，Transformer中采用的是这种。 假设输入为 q，Memory 中以（k，v）形式存储需要的上下文。k 是</summary>
+    <summary type="html">&lt;h2 id=&quot;注意力机制&quot;&gt;&lt;a href=&quot;#注意力机制&quot; class=&quot;headerlink&quot; title=&quot;注意力机制&quot;&gt;&lt;/a&gt;注意力机制&lt;/h2&gt;&lt;h3 id=&quot;Memory-Based&quot;&gt;&lt;a href=&quot;#Memory-Based&quot;</summary>
         
       
     
