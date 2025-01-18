@@ -1,6 +1,6 @@
 # Basic Information 
 title: Zunnan Xu
-position: Student
+position: M.Eng Student
 affiliation: |
   Tsinghua University
 email: xuzn3@qq.com 
@@ -21,7 +21,7 @@ github_link: https://github.com/kkakkkka
 
 # Images (e.g., your profile picture and your website's favicon) 
 # "favicon" and "favicon_dark" are used for the light and dark modes, respectively. 
-avatar: ./assets/img/profile.jpg
+avatar: ./assets/img/avatar.png
 favicon: ./assets/img/favicon.png
 favicon_dark: ./assets/img/favicon-dark.png
 
