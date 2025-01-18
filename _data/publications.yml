@@ -1,0 +1,29 @@
+main:
+
+  - title: "Bridging Vision and Language Encoders: Parameter-Efficient Tuning for Referring Image Segmentation"
+    authors: <strong>Zunnan Xu</strong>, Zhihong Chen, Yong Zhang, Yibing Song, Xiang Wan, Guanbin Li
+    conference_short: ICCV
+    conference: IEEE/CVF International Conference on Computer Vision <strong>(ICCV)</strong>, 2023. 
+    pdf: https://arxiv.org/pdf/2307.11545
+    code: https://github.com/kkakkkka/ETRIS
+    page: https://github.com/kkakkkka/ETRIS
+    image: ./assets/img/publication/etris.png
+
+  - title: "MaPPER: Multimodal Prior-guided Parameter Efficient Tuning for Referring Expression Comprehension"
+    authors: Ting Liu, <strong>Zunnan Xu</strong>, Yue Hu, Liangtao Shi, Zhiqiang Wang, Quanjun Yin
+    conference_short: EMNLP
+    conference: Conference on Empirical Methods in Natural Language Processing <strong>(EMNLP)</strong>, 2024.
+    pdf: https://arxiv.org/pdf/2409.13609
+    code: https://github.com/liuting20/MaPPER
+    page: https://github.com/liuting20/MaPPER
+    image: ./assets/img/publication/mapper.png
+
+  - title: "Densely Connected Parameter-Efficient Tuning for Referring Image Segmentation"
+    authors: Jiaqi Huang, <strong>Zunnan Xu</strong>, Ting Liu, Yong Liu, Haonan Han, Kehong Yuan, Xiu Li
+    conference_short: AAAI
+    conference: Proceedings of the AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2025.
+    pdf: https://arxiv.org/pdf/2501.08580
+    code: https://github.com/jiaqihuang01/DETRIS
+    page: https://github.com/jiaqihuang01/DETRIS
+    image: ./assets/img/publication/detris.png
+  
