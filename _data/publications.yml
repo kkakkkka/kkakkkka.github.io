@@ -9,6 +9,24 @@ main:
     page: https://github.com/kkakkkka/ETRIS
     image: ./assets/img/publication/etris.png
 
+  - title: "MambaTalk: Efficient Holistic Gesture Synthesis with Selective State Space Models"
+    authors: <strong>Zunnan Xu</strong>, Yukang Lin, Haonan Han, Sicheng Yang, Ronghui Li, Yachao Zhang, Xiu Li
+    conference_short: NeurIPS
+    conference: Advances in Neural Information Processing Systems <strong>(NeurIPS)</strong>, 2024.
+    pdf: https://arxiv.org/pdf/2403.09471
+    code: https://github.com/kkakkkka/MambaTalk
+    page: https://kkakkkka.github.io/MambaTalk/
+    image: ./assets/img/publication/mambatalk.png
+
+  - title: "HunyuanVideo: A Systematic Framework For Large Video Generative Models"
+    authors: Hunyuan Foundation Model Team
+    conference_short: Arxiv
+    conference: Arxiv, 2024.
+    pdf: https://arxiv.org/abs/2412.03603
+    code: https://github.com/Tencent/HunyuanVideo
+    page: https://aivideo.hunyuan.tencent.com/
+    image: ./assets/img/publication/hunyuanvideo.png
+
   # - title: "MaPPER: Multimodal Prior-guided Parameter Efficient Tuning for Referring Expression Comprehension"
   #   authors: Ting Liu, <strong>Zunnan Xu</strong>, Yue Hu, Liangtao Shi, Zhiqiang Wang, Quanjun Yin
   #   conference_short: EMNLP
@@ -18,12 +36,12 @@ main:
   #   page: https://github.com/liuting20/MaPPER
   #   image: ./assets/img/publication/mapper.png
 
-  # - title: "Densely Connected Parameter-Efficient Tuning for Referring Image Segmentation"
-  #   authors: Jiaqi Huang, <strong>Zunnan Xu</strong>, Ting Liu, Yong Liu, Haonan Han, Kehong Yuan, Xiu Li
-  #   conference_short: AAAI
-  #   conference: Proceedings of the AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2025.
-  #   pdf: https://arxiv.org/pdf/2501.08580
-  #   code: https://github.com/jiaqihuang01/DETRIS
-  #   page: https://github.com/jiaqihuang01/DETRIS
-  #   image: ./assets/img/publication/detris.png
+  - title: "Densely Connected Parameter-Efficient Tuning for Referring Image Segmentation"
+    authors: Jiaqi Huang, <strong>Zunnan Xu</strong>, Ting Liu, Yong Liu, Haonan Han, Kehong Yuan, Xiu Li
+    conference_short: AAAI
+    conference: Proceedings of the AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2025.
+    pdf: https://arxiv.org/pdf/2501.08580
+    code: https://github.com/jiaqihuang01/DETRIS
+    page: https://github.com/jiaqihuang01/DETRIS
+    image: ./assets/img/publication/detris.png
   
