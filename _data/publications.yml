@@ -36,12 +36,12 @@ main:
   #   page: https://github.com/liuting20/MaPPER
   #   image: ./assets/img/publication/mapper.png
 
-  - title: "Densely Connected Parameter-Efficient Tuning for Referring Image Segmentation"
-    authors: Jiaqi Huang, <strong>Zunnan Xu</strong>, Ting Liu, Yong Liu, Haonan Han, Kehong Yuan, Xiu Li
-    conference_short: AAAI
-    conference: Proceedings of the AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2025.
-    pdf: https://arxiv.org/pdf/2501.08580
-    code: https://github.com/jiaqihuang01/DETRIS
-    page: https://github.com/jiaqihuang01/DETRIS
-    image: ./assets/img/publication/detris.png
+  # - title: "Densely Connected Parameter-Efficient Tuning for Referring Image Segmentation"
+  #   authors: Jiaqi Huang, <strong>Zunnan Xu</strong>, Ting Liu, Yong Liu, Haonan Han, Kehong Yuan, Xiu Li
+  #   conference_short: AAAI
+  #   conference: Proceedings of the AAAI Conference on Artificial Intelligence <strong>(AAAI)</strong>, 2025.
+  #   pdf: https://arxiv.org/pdf/2501.08580
+  #   code: https://github.com/jiaqihuang01/DETRIS
+  #   page: https://github.com/jiaqihuang01/DETRIS
+  #   image: ./assets/img/publication/detris.png
   
