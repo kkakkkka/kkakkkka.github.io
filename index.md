@@ -10,6 +10,7 @@ Hi, I am a student at Tsinghua University. Currently, my research focus on multi
 My research topic includes vision-language understanding and video/3D generation.
 
 
+{% include_relative _includes/projects.md %}
 
 {% include_relative _includes/publications.md %}
 
