@@ -1,0 +1,12 @@
+main:
+
+  - title: "HunyuanVideo: A Systematic Framework For Large Video Generative Models"
+    authors: Hunyuan Foundation Model Team
+    conference_short: Arxiv
+    conference: Arxiv, 2024.
+    pdf: https://arxiv.org/abs/2412.03603
+    code: https://github.com/Tencent/HunyuanVideo
+    page: https://aivideo.hunyuan.tencent.com/
+    image: ./assets/img/publication/hunyuanvideo.png
+
+  
