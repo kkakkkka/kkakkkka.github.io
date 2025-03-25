@@ -22,7 +22,7 @@ main:
     authors: Zunnan Xu, Zhentao Yu, Zixiang Zhou, Jun Zhou, Xiaoyu Jin, Fa-Ting Hong, Xiaozhong Ji, Junwei Zhu, Chengfei Cai, Shiyu Tang, Qin Lin, Xiu Li, Qinglin Lu
     conference_short: CVPR
     conference: IEEE/CVF Conference on Computer Vision and Pattern Recognition <strong>(CVPR)</strong>, 2025. 
-    pdf: https://arxiv.org/abs/2412.03603
+    pdf: https://arxiv.org/pdf/2503.18860
     code: https://github.com/kkakkkka/HunyuanPortrait
     page: https://kkakkkka.github.io/HunyuanPortrait
     image: ./assets/img/publication/hunyuanportrait.png
