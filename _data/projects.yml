@@ -1,7 +1,7 @@
 main:
 
   - title: "HunyuanVideo: A Systematic Framework For Large Video Generative Models"
-    authors: Hunyuan Foundation Model Team
+    authors: Hunyuan Foundation Model Team: <strong>Zunnan Xu</strong> (Core Contributor)
     conference_short: Arxiv
     conference: Arxiv, 2024.
     pdf: https://arxiv.org/abs/2412.03603

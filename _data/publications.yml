@@ -19,7 +19,7 @@ main:
     image: ./assets/img/publication/mambatalk.png
 
   - title: "HunyuanPortrait: Implicit Condition Control for Enhanced Portrait Animation"
-    authors: Zunnan Xu, Zhentao Yu, Zixiang Zhou, Jun Zhou, Xiaoyu Jin, Fa-Ting Hong, Xiaozhong Ji, Junwei Zhu, Chengfei Cai, Shiyu Tang, Qin Lin, Xiu Li, Qinglin Lu
+    authors: <strong>Zunnan Xu</strong>, Zhentao Yu, Zixiang Zhou, Jun Zhou, Xiaoyu Jin, Fa-Ting Hong, Xiaozhong Ji, Junwei Zhu, Chengfei Cai, Shiyu Tang, Qin Lin, Xiu Li, Qinglin Lu
     conference_short: CVPR
     conference: IEEE/CVF Conference on Computer Vision and Pattern Recognition <strong>(CVPR)</strong>, 2025. 
     pdf: https://arxiv.org/pdf/2503.18860
